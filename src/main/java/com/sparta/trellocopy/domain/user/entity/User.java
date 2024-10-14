@@ -32,4 +32,5 @@ public class User extends Timestamped {
         this.role = role;
         this.deleted = deleted;
     }
+
 }
