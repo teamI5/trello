@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity
 @NoArgsConstructor
@@ -23,8 +22,9 @@ public class Card extends Timestamped {
 
     private LocalDateTime deadline;
 
-    @OneToMany(mappedBy = "card")
-    private ArrayList<List> list;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "list_id")
+    private List list;
 
     private String file_url;
 
