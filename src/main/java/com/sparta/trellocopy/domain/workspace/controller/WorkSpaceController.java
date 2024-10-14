@@ -27,13 +27,13 @@ public class WorkSpaceController {
     }
 
     // 유저 초대하기
-    @PutMapping("/{workspaceId}/{userId}")
+    @PutMapping("/{workspaceId}/{email}")
     public ResponseEntity<WorkSpaceResponse> addUserAtWorkSpace(
             @PathVariable Long workspaceId,
-            @PathVariable Long userId,
+            @PathVariable String email,
             @AuthenticationPrincipal AuthUser authUser
     ){
-        return ResponseEntity.ok(workSpaceService.addUserAtWorkSpace(workspaceId, userId, authUser));
+        return ResponseEntity.ok(workSpaceService.addUserAtWorkSpace(workspaceId, email, authUser));
     }
 
     // 자신의 모든 워크스페이스 조회하기

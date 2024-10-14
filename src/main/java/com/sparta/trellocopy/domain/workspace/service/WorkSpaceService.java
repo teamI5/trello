@@ -4,6 +4,7 @@ import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.UserRole;
+import com.sparta.trellocopy.domain.user.exception.UserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceResponse;
@@ -62,7 +63,7 @@ public class WorkSpaceService {
     @Transactional
     public WorkSpaceResponse addUserAtWorkSpace(
             Long workSpaceId,
-            Long userId,
+            String email,
             AuthUser authUser
     ) {
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
@@ -72,7 +73,10 @@ public class WorkSpaceService {
             throw new WorkSpaceForbiddenException("관리자 혹은 소속 인원만 워크스페이스에 다른 유저를 초대할 수 있습니다.");
         }
 
-        User addedUser = userRepository.findByIdOrElseThrow(userId);
+        User addedUser = userRepository.findByEmail(email);
+        if(addedUser == null){
+            throw new UserNotFoundException("잘못된 이메일이거나 해당 유저가 존재하지 않습니다.");
+        }
 
         WorkSpaceUser workSpaceUser = WorkSpaceUser.builder()
                 .user(addedUser)
