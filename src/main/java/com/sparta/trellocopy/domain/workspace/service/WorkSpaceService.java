@@ -96,4 +96,15 @@ public class WorkSpaceService {
 
         return workSpaceResponses;
     }
+
+    @Transactional
+    public WorkSpaceResponse updateWorkSpace(AuthUser authUser, Long workspaceId, WorkSpaceRequest workSpaceRequest) {
+
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId)
+                .orElseThrow(()-> new WorkSpaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
+
+        workSpace.update(workSpaceRequest.getTitle(), workSpaceRequest.getDescription());
+
+        return WorkSpaceResponse.fromWorkSpace(workSpace);
+    }
 }

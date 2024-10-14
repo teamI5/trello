@@ -39,4 +39,13 @@ public class WorkSpace extends Timestamped {
         this.boards = boards;
         this.users = users;
     }
+
+    public void update(String title, String description) {
+        if (this.title != null) {
+            this.title = title;
+        }
+        if (this.description != null) {
+            this.description = description;
+        }
+    }
 }

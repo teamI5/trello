@@ -13,11 +13,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/workspaces")
 public class WorkSpaceController {
 
     private final WorkSpaceService workSpaceService;
 
-    @PostMapping("/workspaces")
+    @PostMapping
     public ResponseEntity<WorkSpaceResponse> saveWorkSpace(
             @RequestBody WorkSpaceRequest workSpaceRequest,
             @AuthenticationPrincipal AuthUser authUser
@@ -26,7 +27,7 @@ public class WorkSpaceController {
     }
 
     // 유저 초대하기
-    @PutMapping("/workspaces/{workspaceId}/{userId}")
+    @PutMapping("/{workspaceId}/{userId}")
     public ResponseEntity<WorkSpaceResponse> addUserAtWorkSpace(
             @PathVariable Long workspaceId,
             @PathVariable Long userId,
@@ -36,7 +37,7 @@ public class WorkSpaceController {
     }
 
     // 자신의 모든 워크스페이스 조회하기
-    @GetMapping("/workspaces")
+    @GetMapping
     public ResponseEntity<List<WorkSpaceResponse>> getWorkSpace(
             @AuthenticationPrincipal AuthUser authUser
     ){
@@ -44,6 +45,14 @@ public class WorkSpaceController {
     }
 
     // 수정하기
+    @PutMapping("/{workspaceId}")
+    public ResponseEntity<WorkSpaceResponse> updateWorkSpace(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long workspaceId,
+            @RequestBody WorkSpaceRequest workSpaceRequest
+    ){
+        return ResponseEntity.ok(workSpaceService.updateWorkSpace(authUser, workspaceId, workSpaceRequest));
+    }
 
     // 삭제하기
 }
