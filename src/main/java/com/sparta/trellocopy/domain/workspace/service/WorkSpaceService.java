@@ -10,6 +10,7 @@ import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceResponse;
 import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
 import com.sparta.trellocopy.domain.workspace.entity.WorkSpaceUser;
 import com.sparta.trellocopy.domain.workspace.exception.WorkSpaceForbiddenException;
+import com.sparta.trellocopy.domain.workspace.exception.WorkSpaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
 import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class WorkSpaceService {
     private final WorkSpaceUserRepository workSpaceUserRepository;
     private final UserRepository userRepository;
 
+    // 워크스페이스 만들기
     @Transactional
     public WorkSpaceResponse saveWorkSpace(WorkSpaceRequest workSpaceRequest, AuthUser authUser) {
 
@@ -50,6 +53,35 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceRepository.save(workSpace);
+        workSpaceUserRepository.save(workSpaceUser);
+
+        return WorkSpaceResponse.fromWorkSpace(workSpace);
+    }
+
+    // 관리자 혹은 워크스페이스 소속 인원이 다른 유저를 초대하기
+    @Transactional
+    public WorkSpaceResponse addUserAtWorkSpace(
+            Long workSpaceId,
+            Long userId,
+            AuthUser authUser
+    ) {
+        WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
+                .orElseThrow(()-> new WorkSpaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
+
+
+        User user = userRepository.findByIdOrElseThrow(authUser.getId());
+
+        if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workSpace.getUsers().stream().map(WorkSpaceUser::getUser).toList().contains(user)){
+            throw new WorkSpaceForbiddenException("관리자 혹은 소속 인원만 워크스페이스에 다른 유저를 초대할 수 있습니다.");
+        }
+
+        User addedUser = userRepository.findByIdOrElseThrow(userId);
+
+        WorkSpaceUser workSpaceUser = WorkSpaceUser.builder()
+                .user(addedUser)
+                .workSpace(workSpace)
+                .build();
+
         workSpaceUserRepository.save(workSpaceUser);
 
         return WorkSpaceResponse.fromWorkSpace(workSpace);

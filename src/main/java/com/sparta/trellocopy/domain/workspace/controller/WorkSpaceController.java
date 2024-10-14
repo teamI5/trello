@@ -7,10 +7,7 @@ import com.sparta.trellocopy.domain.workspace.service.WorkSpaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +24,14 @@ public class WorkSpaceController {
     }
 
     // 유저 초대하기
+    @PutMapping("/workspaces/{workspaceId}/{userId}")
+    public ResponseEntity<WorkSpaceResponse> addUserAtWorkSpace(
+            @PathVariable Long workspaceId,
+            @PathVariable Long userId,
+            @AuthenticationPrincipal AuthUser authUser
+    ){
+        return ResponseEntity.ok(workSpaceService.addUserAtWorkSpace(workspaceId, userId, authUser));
+    }
 
     // 조회하기
 
