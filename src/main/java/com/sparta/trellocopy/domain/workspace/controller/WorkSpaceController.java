@@ -55,4 +55,11 @@ public class WorkSpaceController {
     }
 
     // 삭제하기
+    @DeleteMapping("/{workspaceId}")
+    public void deleteWorkSpace(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long workspaceId
+    ){
+        workSpaceService.deleteWorkSpace(authUser, workspaceId);
+    }
 }

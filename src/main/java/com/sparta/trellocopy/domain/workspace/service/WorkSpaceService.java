@@ -97,6 +97,7 @@ public class WorkSpaceService {
         return workSpaceResponses;
     }
 
+    // 제목과 설명 수정
     @Transactional
     public WorkSpaceResponse updateWorkSpace(AuthUser authUser, Long workspaceId, WorkSpaceRequest workSpaceRequest) {
 
@@ -106,5 +107,19 @@ public class WorkSpaceService {
         workSpace.update(workSpaceRequest.getTitle(), workSpaceRequest.getDescription());
 
         return WorkSpaceResponse.fromWorkSpace(workSpace);
+    }
+
+    // 삭제
+    @Transactional
+    public void deleteWorkSpace(AuthUser authUser, Long workspaceId) {
+
+        if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN)){
+            throw new WorkSpaceForbiddenException("관리자만 워크스페이스를 삭제할 수 있습니다.");
+        }
+
+        WorkSpace workSpace = workSpaceRepository.findById(workspaceId)
+                .orElseThrow(()-> new WorkSpaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
+
+        workSpaceRepository.delete(workSpace);
     }
 }
