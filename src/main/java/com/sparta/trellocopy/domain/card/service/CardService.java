@@ -5,7 +5,6 @@ import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
 import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
 
 @RequiredArgsConstructor
 public class CardService {
@@ -26,7 +25,7 @@ public class CardService {
 
         return new CardSimpleResponse(
             "Card created sucessfully",
-            "",
+            "", //createdCard.getUser.getEmail,
             200
         );
     }
