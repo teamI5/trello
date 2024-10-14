@@ -28,12 +28,15 @@ public class Comment extends Timestamped {
     @JoinColumn(nullable = false, name = "card_id")
     private Card card;
 
-    public Comment(CommentRequestDto commentRequestDto, User user, Card card) {
+    public Comment(String content, User user, Card card) {
 
-        this.content = commentRequestDto.getContent();
+        this.content = content;
         this.user = user;
         this.card = card;
     }
 
+    public void updateComment(String content) {
+        this.content = content;
+    }
 
 }
