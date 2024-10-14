@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class WorkSpaceController {
@@ -33,7 +35,13 @@ public class WorkSpaceController {
         return ResponseEntity.ok(workSpaceService.addUserAtWorkSpace(workspaceId, userId, authUser));
     }
 
-    // 조회하기
+    // 자신의 모든 워크스페이스 조회하기
+    @GetMapping("/workspaces")
+    public ResponseEntity<List<WorkSpaceResponse>> getWorkSpace(
+            @AuthenticationPrincipal AuthUser authUser
+    ){
+        return ResponseEntity.ok(workSpaceService.getWorkSpace(authUser));
+    }
 
     // 수정하기
 

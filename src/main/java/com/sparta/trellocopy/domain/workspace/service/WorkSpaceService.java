@@ -68,10 +68,7 @@ public class WorkSpaceService {
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(()-> new WorkSpaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-
-        User user = userRepository.findByIdOrElseThrow(authUser.getId());
-
-        if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workSpace.getUsers().stream().map(WorkSpaceUser::getUser).toList().contains(user)){
+        if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workSpace.getUsers().stream().map(workSpaceUser -> workSpaceUser.getUser().getId()).toList().contains(authUser.getId())){
             throw new WorkSpaceForbiddenException("관리자 혹은 소속 인원만 워크스페이스에 다른 유저를 초대할 수 있습니다.");
         }
 
@@ -85,5 +82,18 @@ public class WorkSpaceService {
         workSpaceUserRepository.save(workSpaceUser);
 
         return WorkSpaceResponse.fromWorkSpace(workSpace);
+    }
+
+    // 로그인된 유저가 가입된 모든 워크스페이스 조회
+    public List<WorkSpaceResponse> getWorkSpace(AuthUser authUser) {
+
+        List<WorkSpace> workSpaces = workSpaceRepository.findByUsers_User_Id(authUser.getId());
+
+        List<WorkSpaceResponse> workSpaceResponses = new ArrayList<>();
+        for(WorkSpace workSpace : workSpaces){
+            workSpaceResponses.add(WorkSpaceResponse.fromWorkSpace(workSpace));
+        }
+
+        return workSpaceResponses;
     }
 }
