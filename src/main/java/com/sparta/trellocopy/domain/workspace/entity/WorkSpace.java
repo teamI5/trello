@@ -3,6 +3,7 @@ package com.sparta.trellocopy.domain.workspace.entity;
 import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,10 +17,21 @@ public class WorkSpace extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
     private String description;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
     private List<Board> boards;
+
+    @Builder
+    public WorkSpace(
+            String title,
+            String description,
+            List<Board> boards
+    ) {
+        this.title = title;
+        this.description = description;
+        this.boards = boards;
+    }
 }
