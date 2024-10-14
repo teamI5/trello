@@ -1,5 +1,6 @@
 package com.sparta.trellocopy.domain.workspace.controller;
 
+import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceResponse;
 import com.sparta.trellocopy.domain.workspace.service.WorkSpaceService;
@@ -18,9 +19,9 @@ public class WorkSpaceController {
 
     @PostMapping("/workspaces")
     public ResponseEntity<WorkSpaceResponse> saveWorkSpace(
-            @RequestBody WorkSpaceRequest workSpaceRequest
-            // 유저 추가하기
-            ) {
-        return ResponseEntity.ok(workSpaceService)
+            @RequestBody WorkSpaceRequest workSpaceRequest,
+            @AuthenticationPrincipal AuthUser authUser
+    ) {
+        return ResponseEntity.ok(workSpaceService.saveWorkSpace(workSpaceRequest, authUser));
     }
 }
