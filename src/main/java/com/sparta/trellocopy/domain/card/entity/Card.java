@@ -28,4 +28,11 @@ public class Card extends Timestamped {
 
     private String file_url;
 
+    public Card(String title, String contents, LocalDateTime deadline, String file_url){
+        this.title = title;
+        this.contents = contents;
+        this.deadline = deadline;
+        this.file_url = file_url;
+    }
+
 }
