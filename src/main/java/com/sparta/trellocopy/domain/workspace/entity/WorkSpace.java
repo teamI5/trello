@@ -24,14 +24,19 @@ public class WorkSpace extends Timestamped {
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
     private List<Board> boards;
 
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
+    private List<WorkSpaceUser> users;
+
     @Builder
     public WorkSpace(
             String title,
             String description,
-            List<Board> boards
+            List<Board> boards,
+            List<WorkSpaceUser> users
     ) {
         this.title = title;
         this.description = description;
         this.boards = boards;
+        this.users = users;
     }
 }
