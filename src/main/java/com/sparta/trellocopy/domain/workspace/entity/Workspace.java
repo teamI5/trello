@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class WorkSpace extends Timestamped {
+public class Workspace extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,7 @@ public class WorkSpace extends Timestamped {
     private List<WorkspaceUser> users;
 
     @Builder
-    public WorkSpace(
+    public Workspace(
             String title,
             String description,
             List<Board> boards,

@@ -1,6 +1,6 @@
 package com.sparta.trellocopy.domain.user.entity;
 
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,13 +21,13 @@ public class WorkspaceUser {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
-    private WorkSpace workspace;
+    private Workspace workspace;
 
     @Enumerated(EnumType.STRING)
     private WorkspaceRole role;
 
     @Builder
-    private WorkspaceUser(User user, WorkSpace workspace, WorkspaceRole role) {
+    private WorkspaceUser(User user, Workspace workspace, WorkspaceRole role) {
         this.user = user;
         this.workspace = workspace;
         this.role = role;

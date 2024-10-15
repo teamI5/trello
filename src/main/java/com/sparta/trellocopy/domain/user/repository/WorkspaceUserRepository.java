@@ -1,7 +1,7 @@
 package com.sparta.trellocopy.domain.user.repository;
 
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,5 +15,5 @@ public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, Lo
     Optional<WorkspaceUser> findByWorkspaceIdAndUserId(@Param("workspaceId") Long workspaceId, @Param("userId") Long userId);
 
     @Query("SELECT wu.workspace FROM WorkspaceUser wu JOIN FETCH wu.workspace WHERE wu.user.id = :userId")
-    List<WorkSpace> findAllWorkspacesByUserId(@Param("userId") Long userId);
+    List<Workspace> findAllWorkspacesByUserId(@Param("userId") Long userId);
 }
