@@ -2,7 +2,6 @@ package com.sparta.trellocopy.domain.comment.entity;
 
 import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.user.entity.User;
-import com.sparta.trellocopy.domain.comment.Dto.CommentRequestDto;
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;

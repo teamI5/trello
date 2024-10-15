@@ -7,7 +7,6 @@ import com.sparta.trellocopy.domain.comment.Dto.CommentResponseDto;
 import com.sparta.trellocopy.domain.comment.Dto.CommentSaveRequestDto;
 import com.sparta.trellocopy.domain.comment.Dto.CommentSaveResponseDto;
 import com.sparta.trellocopy.domain.comment.entity.Comment;
-import com.sparta.trellocopy.domain.comment.entity.Emoji;
 import com.sparta.trellocopy.domain.comment.repository.CommentRepository;
 import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
@@ -23,8 +22,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +42,8 @@ public class CommentService {
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
 //        Long workspaceId = card.getWorkspace().getId();
-//        checkUserRole(user, workspaceId);
+//        WorkspaceUser workspaceUser = workspaceUserRepository.findById(user.getId()).orElse(null);
+//        checkUserRole(user, workspaceUser.getId());
 
         Comment comment = new Comment(
             commentSaveRequestDto.getContent(),
@@ -150,31 +148,11 @@ public class CommentService {
     private void checkUserRole(User user, Long workspaceId) {
 
         WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,user.getId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 해당 워크스페이스에 존재하지 않음"));
+                .orElseThrow(() -> new NotFoundException("사용자가 해당 워크스페이스에 존재하지 않음"));
 
         if (workspaceUser.getRole().equals(WorkspaceRole.READ_ONLY)){
             throw new IllegalArgumentException("권한이 없습니다");
         }
-    }
-
-    // 이모지 구분
-    private List<Emoji> emojis(String content){
-        List<Emoji> emojis = new ArrayList<>();
-
-        Pattern emojiPattern = Pattern.compile(":(\\w+):");
-        Matcher emojiMatcher = emojiPattern.matcher(content);
-
-        while (emojiMatcher.find()) {
-            String emojiCode = emojiMatcher.group();
-            Emoji emoji = new Emoji(); // 이 부분 수정 필요
-
-            if (emoji != null) {
-                emojis.add(emoji);
-            }
-        }
-
-        return emojis;
-
     }
 
 }
