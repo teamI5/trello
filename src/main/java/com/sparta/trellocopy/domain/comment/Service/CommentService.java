@@ -15,7 +15,6 @@ import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
-import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,9 +52,10 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return new CommentSaveResponseDto(
-            savedComment.getContent(),
-            savedComment.getCreatedAt(),
-            savedComment.getModifiedAt()
+                savedComment.getId(),
+                savedComment.getContent(),
+                savedComment.getCreatedAt(),
+                savedComment.getModifiedAt()
         );
 
     }
