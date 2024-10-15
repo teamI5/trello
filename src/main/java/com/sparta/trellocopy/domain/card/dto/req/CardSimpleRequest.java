@@ -4,15 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardSaveRequest {
+public class CardSimpleRequest {
     public Long WorkSpaceId;
-    private String title;
-    private String contents;
-    private LocalDateTime deadline;
-    private String file_url;
+    public Long ListId;
 }

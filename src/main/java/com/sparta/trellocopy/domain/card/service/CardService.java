@@ -1,21 +1,32 @@
 package com.sparta.trellocopy.domain.card.service;
 
 import com.sparta.trellocopy.domain.card.dto.req.CardSaveRequest;
+import com.sparta.trellocopy.domain.card.dto.req.CardSimpleRequest;
 import com.sparta.trellocopy.domain.card.dto.res.CardDetailResponse;
 import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
 import com.sparta.trellocopy.domain.card.entity.Card;
+import com.sparta.trellocopy.domain.card.exception.CardForbiddenException;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
-import com.sparta.trellocopy.domain.user.entity.User;
+import com.sparta.trellocopy.domain.user.dto.AuthUser;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
+@Service
 @RequiredArgsConstructor
 public class CardService {
     private final CardRepository cardRepository;
-    public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest) {
-        // user.role(view만 아니면 됨)
+    private final WorkspaceUserRepository workspaceUserRepository;
+
+    public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest, AuthUser authUser) {
+        String role = getWorkSpaceUser_Role(cardSaveRequest.WorkSpaceId, authUser);
+        if(role.equals(WorkspaceRole.READ_ONLY)){
+            throw new CardForbiddenException();
+        }
+
         Card card = new Card(
             cardSaveRequest.getTitle(),
             cardSaveRequest.getContents(),
@@ -33,8 +44,11 @@ public class CardService {
         );
     }
 
-    public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request) {
-        // user.role(view만 아니면 됨)
+    public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
+        String role = getWorkSpaceUser_Role(request.WorkSpaceId, authUser);
+        if(role.equals(WorkspaceRole.READ_ONLY)){
+            throw new CardForbiddenException();
+        }
 
         Card card = cardRepository.findByIdOrElseThrow(cardId);
 
@@ -53,8 +67,11 @@ public class CardService {
     }
 
     @Transactional
-    public CardSimpleResponse deletedCard(Long cardId){
-        // user.role(view만 아니면 됨)
+    public CardSimpleResponse deletedCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
+        String role = getWorkSpaceUser_Role(request.WorkSpaceId, authUser);
+        if(role.equals(WorkspaceRole.READ_ONLY)){
+            throw new CardForbiddenException();
+        }
 
         Card card = cardRepository.findByIdOrElseThrow(cardId);
 
@@ -81,4 +98,13 @@ public class CardService {
         );
 
     }
+
+    public String getWorkSpaceUser_Role(Long workspaceId, AuthUser authUser){
+        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 워크스페이스에 존재하지 않습니다."));
+
+        return workspaceUser.getRole().name();
+    }
+
+
 }
