@@ -22,6 +22,7 @@ public class Lists extends Timestamped {
     private String title;
     private Long orderNumber;
 
+
     public Lists(String title, Board board , Long orderNumber) {
         this.title = title;
         this.board = board;

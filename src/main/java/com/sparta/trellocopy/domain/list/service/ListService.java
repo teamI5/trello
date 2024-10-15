@@ -8,6 +8,7 @@ import com.sparta.trellocopy.domain.list.dto.request.ListUpdateRequest;
 import com.sparta.trellocopy.domain.list.dto.response.ListSaveResponse;
 import com.sparta.trellocopy.domain.list.dto.response.ListUpdateResponse;
 import com.sparta.trellocopy.domain.list.entity.Lists;
+import com.sparta.trellocopy.domain.list.exception.ListNotFoundException;
 import com.sparta.trellocopy.domain.list.repository.ListRepository;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
@@ -54,9 +55,9 @@ public class ListService {
     public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request) {
 
         Lists changelist = listRepository.findByOrderNumber(request.getOrderNumber())
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(ListNotFoundException::new);
         Lists secondchange = listRepository.findByOrderNumber(request.getNewOrderNumber())
-                        .orElseThrow(NotFoundException::new);
+                        .orElseThrow(ListNotFoundException::new);
         Long templistorderNumber = changelist.getOrderNumber();
 
         changelist.update(secondchange.getOrderNumber());
