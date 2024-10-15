@@ -14,8 +14,6 @@ public class CardService {
     private final CardRepository cardRepository;
     public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest) {
         // user.role(view만 아니면 됨)
-        // 로그인 상태인지
-        //User user = User.fromAuthUser(authUser);
 
         Card card = new Card(
             cardSaveRequest.getTitle(),
@@ -34,7 +32,7 @@ public class CardService {
     }
 
     public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request) {
-        Card card = cardRepository.findById(cardId).orElseThrow(()->new IllegalArgumentException("Card Not Found."));
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
         card.update(request.getTitle(), request.getContents(), request.getDeadline(), request.getFile_url());
         return new CardSimpleResponse(
             "Card updated sucessfully",
@@ -47,8 +45,7 @@ public class CardService {
     public CardSimpleResponse deletedCard(Long cardId){
         //User user = User.fromAuthUser(authUser);
 
-        Card card = cardRepository.findById(cardId)
-            .orElseThrow(() -> new IllegalArgumentException("Card Not Found."));
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
 
         // role이 읽기전용인지
 
@@ -64,8 +61,7 @@ public class CardService {
     public CardDetailResponse getCard(Long cardId){
         //User user = User.fromAuthUser(authUser);
 
-        Card card = cardRepository.findById(cardId)
-            .orElseThrow(() -> new IllegalArgumentException("Card Not Found."));
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
 
         return new CardDetailResponse(
             card.getId(),
