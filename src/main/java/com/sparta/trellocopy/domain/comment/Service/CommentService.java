@@ -15,6 +15,7 @@ import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
+import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
+    private final WorkspaceUserRepository workspaceUserRepository;
 
     @Transactional
     public CommentSaveResponseDto createComment(long cardId,
@@ -42,7 +44,8 @@ public class CommentService {
         User user = findUserById(authUser.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
-        checkUserRole(user);
+//        Long workspaceId = card.getWorkspace().getId();
+//        checkUserRole(user, workspaceId);
 
         Comment comment = new Comment(
             commentSaveRequestDto.getContent(),
@@ -91,7 +94,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-        checkUserRole(user);
+//        checkUserRole(user);
 
         comment.updateComment(commentRequestDto.getContent());
 
@@ -111,7 +114,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-        checkUserRole(user);
+//        checkUserRole(user);
 
         commentRepository.delete(comment);
 
@@ -144,8 +147,12 @@ public class CommentService {
     }
 
     // 유저의 역할 확인 읽기 전용일 경우 예외처리
-    private void checkUserRole(User user){
-        if (user.getRole() == null || user.getRole().equals(WorkspaceRole.READ_ONLY)){
+    private void checkUserRole(User user, Long workspaceId) {
+
+        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 해당 워크스페이스에 존재하지 않음"));
+
+        if (workspaceUser.getRole().equals(WorkspaceRole.READ_ONLY)){
             throw new IllegalArgumentException("권한이 없습니다");
         }
     }
