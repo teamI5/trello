@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 public class CommentSaveResponseDto {
 
-    private String comment;
+    private String content;
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public CommentSaveResponseDto(String comment, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        this.comment = comment;
+    public CommentSaveResponseDto(String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.content = content;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

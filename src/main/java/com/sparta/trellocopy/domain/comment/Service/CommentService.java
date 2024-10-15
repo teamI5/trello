@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class CommentService {
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
 
         Comment comment = new Comment(
-            commentSaveRequestDto.getComment(),
+            commentSaveRequestDto.getContent(),
             user,
             card
         );
