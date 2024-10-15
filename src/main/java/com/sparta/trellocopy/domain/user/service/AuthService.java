@@ -8,7 +8,6 @@ import com.sparta.trellocopy.domain.user.dto.request.LoginRequest;
 import com.sparta.trellocopy.domain.user.dto.request.UserJoinRequest;
 import com.sparta.trellocopy.domain.user.dto.response.LoginResponse;
 import com.sparta.trellocopy.domain.user.dto.response.UserJoinResponse;
-import com.sparta.trellocopy.domain.user.dto.response.UserResponse;
 import com.sparta.trellocopy.domain.user.dto.response.WorkspaceUserResponse;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.UserRole;
@@ -17,7 +16,7 @@ import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.exception.*;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,14 +84,14 @@ public class AuthService {
     @Transactional
     public WorkspaceUserResponse grant(GrantRequest grantRequest) {
         User user = userRepository.findById(grantRequest.getUserId()).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        WorkSpace workSpace = workSpaceRepository.findById(grantRequest.getWorkspaceId()).orElseThrow(() -> new NotFoundException("존재하지 않는 워크스페이스입니다."));
+        Workspace workSpace = workSpaceRepository.findById(grantRequest.getWorkspaceId()).orElseThrow(() -> new NotFoundException("존재하지 않는 워크스페이스입니다."));
         WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(user.getId(), workSpace.getId()).orElseThrow(WorkspaceUserNotFoundException::new);
         workspaceUser.updateRole(WorkspaceRole.of(grantRequest.getRole()));
 
         return WorkspaceUserResponse.builder()
                 .workspaceId(workSpace.getId())
                 .email(user.getEmail())
-                .workspaceRole(workspaceUser.getRole())
+                .workspaceRole(workspaceUser.getRole().name())
                 .build();
     }
 }

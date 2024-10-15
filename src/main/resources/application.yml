@@ -1,6 +1,6 @@
 spring:
+  profiles:
+    active: ${PROFILE}
   application:
     name: trellocopy
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+
