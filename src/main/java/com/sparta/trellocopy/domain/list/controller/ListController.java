@@ -21,6 +21,8 @@ public class ListController {
 
     /**
      * List 저장 로직
+     * Exception : 읽기 전용 역할을 가진 멤버가 리스트를 생성/수정하려는 경우
+     * <p>
      * request : 제목 , 순서 , AuthUser
      * response : 제목
      */
@@ -29,23 +31,39 @@ public class ListController {
     public ResponseEntity<ListSaveResponse> saveLists(
             @AuthenticationPrincipal AuthUser authUser,
             @RequestBody ListSaveRequest request,
-            @PathVariable Long boardId) {
+            @PathVariable Long boardId,
+            @RequestParam Long workspaceId) {
 
-        return ResponseEntity.ok(listService.saveLists(authUser, request, boardId));
+        return ResponseEntity.ok(listService.saveLists(authUser, request, boardId, workspaceId));
     }
 
     /**
      * List 순서 변경 로직
      * request  : 바꿀 순서의 리스트 번호들
      * response : 제목 , 순서,AuthUser
+     * Exception : 읽기 전용 역할을 가진 멤버가 리스트를 생성/수정하려는 경우
      */
     @PutMapping("/boards/{boardId}")
-    public ResponseEntity <List<ListUpdateResponse>> updateOrderNumbers(
+    public ResponseEntity<List<ListUpdateResponse>> updateOrderNumbers(
 
             @AuthenticationPrincipal AuthUser authUser,
             @RequestBody ListUpdateRequest request,
-            @PathVariable Long boardId
+            @PathVariable Long boardId,
+            @RequestParam Long workspaceId
     ) {
-        return ResponseEntity.ok(listService.updateOrderNumbers(authUser,request,boardId));
+        return ResponseEntity.ok(listService.updateOrderNumbers(authUser, request, boardId, workspaceId));
+    }
+
+    /**
+     * List 삭제 로직
+     * pathValiable : listId
+     * 읽기 전용 역할을 가진 멤버가 리스트를 삭제하려는 경우
+     */
+    @DeleteMapping("/{listId}")
+    public void deleteLists(
+            @PathVariable Long listId,
+            @AuthenticationPrincipal AuthUser authUser,
+            @RequestParam Long workspaceId) {
+        listService.deleteLists(listId, authUser, workspaceId);
     }
 }

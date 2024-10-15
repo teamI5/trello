@@ -1,8 +1,8 @@
 package com.sparta.trellocopy.domain.list.service;
 
 import com.sparta.trellocopy.domain.board.entity.Board;
+import com.sparta.trellocopy.domain.board.exception.BoardNotFoundException;
 import com.sparta.trellocopy.domain.board.repository.BoardRepository;
-import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.list.dto.request.ListSaveRequest;
 import com.sparta.trellocopy.domain.list.dto.request.ListUpdateRequest;
 import com.sparta.trellocopy.domain.list.dto.response.ListSaveResponse;
@@ -11,7 +11,12 @@ import com.sparta.trellocopy.domain.list.entity.Lists;
 import com.sparta.trellocopy.domain.list.exception.ListNotFoundException;
 import com.sparta.trellocopy.domain.list.repository.ListRepository;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.user.exception.WorkspaceRoleForbiddenException;
+import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
+import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +32,24 @@ public class ListService {
     private final ListRepository listRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final WorkspaceUserRepository workspaceUserRepository;
 
     @Transactional
-    public ListSaveResponse saveLists(AuthUser authUser, ListSaveRequest request, Long boardId) {
+    public ListSaveResponse saveLists(AuthUser authUser, ListSaveRequest request, Long boardId, Long workspaceId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new BoardNotFoundException("보드를 찾을 수 없습니다."));
 
-        // 읽기 전용 역할을 가진 멤버가 리스트를 생성/수정하려는 경우
-        //읽기 전용 역할을 가진 멤버가 리스트를 삭제하려는 경우
+
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+
+        // 역할이 readOnly인 경우 Exception 처리
+        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+            throw new WorkspaceRoleForbiddenException("리스트를 생성할 권한이 없습니다.");
+        }
         long orderNumbercount = listRepository.count();
         long orderNumber = orderNumbercount + 1;
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(NotFoundException::new);
+
 
         Lists newList = new Lists(
                 request.getTitle(),
@@ -52,7 +65,15 @@ public class ListService {
     }
 
     @Transactional
-    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId) {
+    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId, Long workspaceId) {
+
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+
+        // 역할이 readOnly인 경우 Exception 처리
+        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+            throw new WorkspaceRoleForbiddenException("리스트를 수정할 권한이 없습니다.");
+        }
 
         List<Lists> listsList = listRepository.findAllByBoardId(boardId);
 
@@ -82,5 +103,18 @@ public class ListService {
                         list.getOrderNumber()
                 )).collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public void deleteLists(Long listId, AuthUser authUser, Long workspaceId) {
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+
+        // 역할이 readOnly인 경우 Exception 처리
+        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+            throw new WorkspaceRoleForbiddenException("리스트를 수정할 권한이 없습니다.");
+        }
+
+        listRepository.deleteById(listId);
     }
 }

@@ -1,10 +1,14 @@
 package com.sparta.trellocopy.domain.list.entity;
 
 import com.sparta.trellocopy.domain.board.entity.Board;
+import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -22,11 +26,14 @@ public class Lists extends Timestamped {
     private String title;
     private Long orderNumber;
 
+    @OneToMany(mappedBy = "lists",cascade = CascadeType.REMOVE)
+    private List<Card> cardList = new ArrayList<>();
 
-    public Lists(String title, Board board , Long orderNumber) {
+
+    public Lists(String title, Board board, Long orderNumber) {
         this.title = title;
         this.board = board;
-        this.orderNumber= orderNumber;
+        this.orderNumber = orderNumber;
 
     }
 
