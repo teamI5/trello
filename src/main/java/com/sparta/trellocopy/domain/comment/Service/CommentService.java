@@ -15,6 +15,7 @@ import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class CommentService {
     private final WorkspaceUserRepository workspaceUserRepository;
 
     @Transactional
-    public CommentSaveResponseDto createComment(long cardId,
+    public CommentSaveResponseDto createComment(long workspaceId, long cardId,
                                                 CommentSaveRequestDto commentSaveRequestDto,
                                                 AuthUser authUser) {
 
@@ -41,9 +42,7 @@ public class CommentService {
         User user = findUserById(authUser.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
-//        Long workspaceId = card.getWorkspace().getId();
-//        WorkspaceUser workspaceUser = workspaceUserRepository.findById(user.getId()).orElse(null);
-//        checkUserRole(user, workspaceUser.getId());
+        checkUserRole(workspaceId, user);
 
         Comment comment = new Comment(
             commentSaveRequestDto.getContent(),
@@ -84,7 +83,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(long cardId, long commentId,
+    public CommentResponseDto updateComment(long workspaceId, long cardId, long commentId,
                                             CommentRequestDto commentRequestDto,
                                             AuthUser authUser) {
 
@@ -92,7 +91,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-//        checkUserRole(user);
+        checkUserRole(workspaceId, user);
 
         comment.updateComment(commentRequestDto.getContent());
 
@@ -106,13 +105,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(long cardId, long commentId, AuthUser authUser) {
+    public void deleteComment(long workspaceId, long cardId, long commentId, AuthUser authUser) {
 
         findCardById(cardId);
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-//        checkUserRole(user);
+        checkUserRole(workspaceId, user);
 
         commentRepository.delete(comment);
 
@@ -145,7 +144,7 @@ public class CommentService {
     }
 
     // 유저의 역할 확인 읽기 전용일 경우 예외처리
-    private void checkUserRole(User user, Long workspaceId) {
+    private void checkUserRole(Long workspaceId, User user) {
 
         WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,user.getId())
                 .orElseThrow(() -> new NotFoundException("사용자가 해당 워크스페이스에 존재하지 않음"));
