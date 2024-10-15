@@ -1,11 +1,6 @@
 spring:
+  profiles:
+    active: ${PROFILE}
   application:
     name: trellocopy
-  datasource:
-    url: jdbc:mysql://localhost:3306/
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+
