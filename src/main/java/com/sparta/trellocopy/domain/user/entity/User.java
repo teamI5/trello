@@ -14,8 +14,8 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted = 'true' WHERE user_id = ?")
-@SQLRestriction("status != 'WITHDRAWN'")
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE user_id = ?")
+@SQLRestriction("deleted = false")
 @Entity
 public class User extends Timestamped {
 
@@ -29,7 +29,7 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @ColumnDefault("0")
+    @ColumnDefault("false")
     private Boolean deleted;
 
     @Builder
@@ -37,5 +37,6 @@ public class User extends Timestamped {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.deleted = false;
     }
 }
