@@ -35,4 +35,10 @@ public class Card extends Timestamped {
         this.file_url = file_url;
     }
 
+    public void update(String title, String contents, LocalDateTime deadline, String file_url) {
+        this.title = title;
+        this.contents = contents;
+        this.deadline = deadline;
+        this.file_url = file_url;
+    }
 }

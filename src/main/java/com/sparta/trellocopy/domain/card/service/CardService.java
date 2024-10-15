@@ -5,6 +5,7 @@ import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
 import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class CardService {
@@ -28,5 +29,20 @@ public class CardService {
             "", //createdCard.getUser.getEmail,
             200
         );
+    }
+
+    public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request) {
+        Card card = cardRepository.findById(cardId).orElseThrow(()->new IllegalArgumentException("Card Not Found."));
+        card.update(request.getTitle(), request.getContents(), request.getDeadline(), request.getFile_url());
+        return new CardSimpleResponse(
+            "Card created sucessfully",
+            "", //createdCard.getUser.getEmail,
+            200
+        );
+    }
+
+    @Transactional
+    public void deletedCard(Long cardId){
+
     }
 }
