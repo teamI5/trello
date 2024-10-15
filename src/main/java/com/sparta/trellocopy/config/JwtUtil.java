@@ -2,6 +2,7 @@ package com.sparta.trellocopy.config;
 
 import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
+import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -36,15 +37,14 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String email, String nickname, UserRole userRole) {
+    public String createToken(User user) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(String.valueOf(userId))
-                        .claim("email", email)
-                        .claim("userRole", userRole)
-                        .claim("nickname", nickname)
+                        .setSubject(String.valueOf(user.getId()))
+                        .claim("email", user.getEmail())
+                        .claim("userRole", user.getRole())
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
