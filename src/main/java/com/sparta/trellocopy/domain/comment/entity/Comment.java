@@ -16,7 +16,7 @@ public class Comment extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT CHARACTER SET utf8mb4")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
