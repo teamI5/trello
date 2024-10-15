@@ -7,10 +7,13 @@ import com.sparta.trellocopy.domain.comment.Dto.CommentResponseDto;
 import com.sparta.trellocopy.domain.comment.Dto.CommentSaveRequestDto;
 import com.sparta.trellocopy.domain.comment.Dto.CommentSaveResponseDto;
 import com.sparta.trellocopy.domain.comment.entity.Comment;
+import com.sparta.trellocopy.domain.comment.entity.Emoji;
 import com.sparta.trellocopy.domain.comment.repository.CommentRepository;
 import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.User;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,7 @@ public class CommentService {
         User user = findUserById(authUser.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
+        checkUserRole(user);
 
         Comment comment = new Comment(
             commentSaveRequestDto.getContent(),
@@ -85,8 +91,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-
-        // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
+        checkUserRole(user);
 
         comment.updateComment(commentRequestDto.getContent());
 
@@ -106,37 +111,63 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-
-        // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
+        checkUserRole(user);
 
         commentRepository.delete(comment);
 
     }
 
-    public Card findCardById(Long cardId) {
+    private Card findCardById(Long cardId) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new NotFoundException("해당 카드가 존재하지 않음"));
 
         return card;
     }
 
-    public Comment findCommentById(Long commentId){
+    private Comment findCommentById(Long commentId){
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         return comment;
     }
 
-    public User findUserById(Long userId) {
+    private User findUserById(Long userId) {
         User user = userRepository.findByIdOrElseThrow(userId);
 
         return user;
     }
 
-    public void commentUserMatch(Comment comment, Long userId) {
+    private void commentUserMatch(Comment comment, Long userId) {
 
         if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), userId)) {
             throw new IllegalArgumentException("해당 댓글과 사용자 일치하지 않음");
         }
+    }
+
+    // 유저의 역할 확인 읽기 전용일 경우 예외처리
+    private void checkUserRole(User user){
+        if (user.getRole() == null || user.getRole().equals(WorkspaceRole.READ_ONLY)){
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+    }
+
+    // 이모지 구분
+    private List<Emoji> emojis(String content){
+        List<Emoji> emojis = new ArrayList<>();
+
+        Pattern emojiPattern = Pattern.compile(":(\\w+):");
+        Matcher emojiMatcher = emojiPattern.matcher(content);
+
+        while (emojiMatcher.find()) {
+            String emojiCode = emojiMatcher.group();
+            Emoji emoji = new Emoji(); // 이 부분 수정 필요
+
+            if (emoji != null) {
+                emojis.add(emoji);
+            }
+        }
+
+        return emojis;
+
     }
 
 }
