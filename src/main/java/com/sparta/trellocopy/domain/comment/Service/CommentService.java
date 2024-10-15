@@ -8,6 +8,7 @@ import com.sparta.trellocopy.domain.comment.Dto.CommentSaveRequestDto;
 import com.sparta.trellocopy.domain.comment.Dto.CommentSaveResponseDto;
 import com.sparta.trellocopy.domain.comment.entity.Comment;
 import com.sparta.trellocopy.domain.comment.repository.CommentRepository;
+import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
@@ -34,7 +35,6 @@ public class CommentService {
                                                 AuthUser authUser) {
 
         Card card = findCardById(cardId);
-
         User user = findUserById(authUser.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
@@ -82,15 +82,10 @@ public class CommentService {
                                             CommentRequestDto commentRequestDto,
                                             AuthUser authUser) {
 
-        Card card = findCardById(cardId);
-
+        findCardById(cardId);
         Comment comment = findCommentById(commentId);
-
         User user = findUserById(authUser.getId());
-
-        if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), user.getId())) {
-            throw new IllegalArgumentException("유저 일치하지 않음");
-        }
+        commentUserMatch(comment,user.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
 
@@ -108,13 +103,10 @@ public class CommentService {
     @Transactional
     public void deleteComment(long cardId, long commentId, AuthUser authUser) {
 
+        findCardById(cardId);
         Comment comment = findCommentById(commentId);
-
         User user = findUserById(authUser.getId());
-
-        if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), user.getId())) {
-            throw new IllegalArgumentException("유저 일치하지 않음");
-        }
+        commentUserMatch(comment,user.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
 
@@ -124,14 +116,13 @@ public class CommentService {
 
     public Card findCardById(Long cardId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NullPointerException("해당 카드가 존재하지 않음"));
+                .orElseThrow(() -> new NotFoundException("해당 카드가 존재하지 않음"));
 
         return card;
     }
 
     public Comment findCommentById(Long commentId){
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NullPointerException("해당 댓글이 존재하지 않음"));
+        Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         return comment;
     }
@@ -142,10 +133,9 @@ public class CommentService {
         return user;
     }
 
-    public void commentUserMatch(Long commentId, Long userId) {
-        Comment comment = findCommentById(commentId);
+    public void commentUserMatch(Comment comment, Long userId) {
 
-        if (!userId.equals(comment.getUser().getId())) {
+        if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), userId)) {
             throw new IllegalArgumentException("해당 댓글과 사용자 일치하지 않음");
         }
     }
