@@ -39,7 +39,7 @@ public class ListController {
      * request  : 바꿀 순서의 리스트 번호들
      * response : 제목 , 순서,AuthUser
      */
-    @PutMapping("/board/{boardId}")
+    @PutMapping("/boards/{boardId}")
     public ResponseEntity <List<ListUpdateResponse>> updateOrderNumbers(
 
             @AuthenticationPrincipal AuthUser authUser,

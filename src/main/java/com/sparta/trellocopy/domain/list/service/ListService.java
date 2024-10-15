@@ -63,7 +63,9 @@ public class ListService {
 
         listsList.remove(listToMove);
 
-        listsList.add(request.getNewPosition(), listToMove);
+        int newPosition = Math.min(request.getNewPosition(), listsList.size());
+
+        listsList.add(newPosition, listToMove);
 
         for (int i = 0; i < listsList.size(); i++) {
             Lists list = listsList.get(i);
@@ -73,10 +75,10 @@ public class ListService {
             }
         }
 
-
         return listsList.stream()
                 .map(list -> new ListUpdateResponse(
                         list.getTitle(),
+                        list.getId(),
                         list.getOrderNumber()
                 )).collect(Collectors.toList());
 
