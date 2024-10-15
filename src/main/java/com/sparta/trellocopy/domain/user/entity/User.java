@@ -32,9 +32,6 @@ public class User extends Timestamped {
     @ColumnDefault("0")
     private Boolean deleted;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WorkspaceUser> workspaces;
-
     @Builder
     private User(String email, String password, UserRole role) {
         this.email = email;

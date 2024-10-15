@@ -91,7 +91,7 @@ public class AuthService {
         return WorkspaceUserResponse.builder()
                 .workspaceId(workSpace.getId())
                 .email(user.getEmail())
-                .workspaceRole(workspaceUser.getRole())
+                .workspaceRole(workspaceUser.getRole().name())
                 .build();
     }
 }
