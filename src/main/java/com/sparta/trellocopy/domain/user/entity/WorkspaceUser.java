@@ -16,9 +16,11 @@ public class WorkspaceUser {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
     private WorkSpace workspace;
 
     @Enumerated(EnumType.STRING)
