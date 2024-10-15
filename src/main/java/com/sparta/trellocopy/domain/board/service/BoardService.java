@@ -13,9 +13,13 @@ import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
+import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +28,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
-    private final WorkSpaceRepository workSpaceRepository;
+    private final WorkspaceRepository workspaceRepository;
 
     // 보드 만들기
+    @Transactional
     public BoardResponse saveBoard(BoardRequest boardRequest, Long workspaceId, AuthUser authUser) {
 
-        Workspace workspace = workSpaceRepository.findById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스가 존재하지 않습니다."));
 
         // 권한 예외 처리 만들기!
@@ -54,7 +59,27 @@ public class BoardService {
         return BoardResponse.fromBoard(newBoard);
     }
 
-    //자신이 속해있는 워크스페이스의 보드 단건 조회
+    // 자신이 속해있는 특정 워크스페이스의 보드 전부 조회
+    public List<BoardResponse> getBoards(AuthUser authUser, Long workspaceId) {
+
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스가 존재하지 않습니다."));
+
+        // 속한 워크스페이스가 맞는지 확인
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
+
+        List<Board> boardList = boardRepository.findByWorkspace_Id(workspace.getId());
+
+        List<BoardResponse> boardResponseList = new ArrayList<>();
+        for (Board board : boardList) {
+            boardResponseList.add(BoardResponse.fromBoard(board));
+        }
+
+        return boardResponseList;
+    }
+
+    //자신이 속해있는 워크스페이스의 보드 단건 조회, 그 하위정보까지
 
     // 보드 수정(이름, 배경색, 이미지)
 
