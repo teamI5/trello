@@ -23,7 +23,7 @@ public class WorkspaceController {
             @RequestBody WorkspaceRequest workSpaceRequest,
             @AuthenticationPrincipal AuthUser authUser
     ) {
-        return ResponseEntity.ok(workSpaceService.saveWorkSpace(workSpaceRequest, authUser));
+        return ResponseEntity.ok(workSpaceService.saveWorkspace(workSpaceRequest, authUser));
     }
 
     // 유저 초대하기
@@ -41,7 +41,7 @@ public class WorkspaceController {
     public ResponseEntity<List<WorkspaceResponse>> getWorkSpace(
             @AuthenticationPrincipal AuthUser authUser
     ){
-        return ResponseEntity.ok(workSpaceService.getWorkSpace(authUser));
+        return ResponseEntity.ok(workSpaceService.getWorkspace(authUser));
     }
 
     // 수정하기
@@ -51,7 +51,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @RequestBody WorkspaceRequest workSpaceRequest
     ){
-        return ResponseEntity.ok(workSpaceService.updateWorkSpace(authUser, workspaceId, workSpaceRequest));
+        return ResponseEntity.ok(workSpaceService.updateWorkspace(authUser, workspaceId, workSpaceRequest));
     }
 
     // 삭제하기
@@ -60,6 +60,6 @@ public class WorkspaceController {
             @AuthenticationPrincipal AuthUser authUser,
             @PathVariable Long workspaceId
     ){
-        workSpaceService.deleteWorkSpace(authUser, workspaceId);
+        workSpaceService.deleteWorkspace(authUser, workspaceId);
     }
 }
