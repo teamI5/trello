@@ -3,6 +3,7 @@ package com.sparta.trellocopy.domain.board.service;
 import com.sparta.trellocopy.domain.board.dto.BoardRequest;
 import com.sparta.trellocopy.domain.board.dto.BoardResponse;
 import com.sparta.trellocopy.domain.board.entity.Board;
+import com.sparta.trellocopy.domain.board.exception.BoardNotFoundException;
 import com.sparta.trellocopy.domain.board.repository.BoardRepository;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
@@ -12,7 +13,6 @@ import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundExceptio
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceNotFoundException;
-import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
 import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -79,7 +79,19 @@ public class BoardService {
         return boardResponseList;
     }
 
-    //자신이 속해있는 워크스페이스의 보드 단건 조회, 그 하위정보까지
+    //자신이 속해있는 워크스페이스의 보드 단건 조회
+    public BoardResponse getBoard(AuthUser authUser, Long boardId) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new BoardNotFoundException("보드가 존재하지 않습니다."));
+
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(board.getWorkspace().getId(), authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
+
+        return BoardResponse.fromBoard(board);
+    }
+
+
 
     // 보드 수정(이름, 배경색, 이미지)
 

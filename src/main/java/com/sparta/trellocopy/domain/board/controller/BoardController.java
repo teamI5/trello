@@ -38,6 +38,13 @@ public class BoardController {
     }
 
     //자신이 속해있는 워크스페이스의 보드 단건 조회(리스트와 카드도 같이)
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> getBoard(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long boardId
+    ){
+        return ResponseEntity.ok(boardService.getBoard(authUser, boardId));
+    }
 
     // 보드 수정(이름, 배경색, 이미지)
 
