@@ -9,18 +9,17 @@ import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkSpaceResponse;
 import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpaceUser;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.workspace.exception.WorkSpaceForbiddenException;
 import com.sparta.trellocopy.domain.workspace.exception.WorkSpaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
-import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceUserRepository;
+import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class WorkSpaceService {
 
     private final WorkSpaceRepository workSpaceRepository;
-    private final WorkSpaceUserRepository workSpaceUserRepository;
+    private final WorkspaceUserRepository workSpaceUserRepository;
     private final UserRepository userRepository;
 
     // 워크스페이스 만들기
@@ -48,7 +47,7 @@ public class WorkSpaceService {
                 .boards(boards)
                 .build();
 
-        WorkSpaceUser workSpaceUser = WorkSpaceUser.builder()
+        WorkspaceUser workSpaceUser = WorkspaceUser.builder()
                 .user(user)
                 .workSpace(workSpace)
                 .build();
@@ -78,7 +77,7 @@ public class WorkSpaceService {
             throw new UserNotFoundException("잘못된 이메일이거나 해당 유저가 존재하지 않습니다.");
         }
 
-        WorkSpaceUser workSpaceUser = WorkSpaceUser.builder()
+        WorkspaceUser workSpaceUser = WorkspaceUser.builder()
                 .user(addedUser)
                 .workSpace(workSpace)
                 .build();

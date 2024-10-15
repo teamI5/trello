@@ -2,6 +2,7 @@ package com.sparta.trellocopy.domain.workspace.entity;
 
 import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,14 +26,14 @@ public class WorkSpace extends Timestamped {
     private List<Board> boards;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
-    private List<WorkSpaceUser> users;
+    private List<WorkspaceUser> users;
 
     @Builder
     public WorkSpace(
             String title,
             String description,
             List<Board> boards,
-            List<WorkSpaceUser> users
+            List<WorkspaceUser> users
     ) {
         this.title = title;
         this.description = description;

@@ -3,7 +3,7 @@ package com.sparta.trellocopy.domain.workspace.dto;
 import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpaceUser;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import lombok.Getter;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class WorkSpaceResponse {
                 workSpace.getTitle(),
                 workSpace.getDescription(),
                 workSpace.getBoards(),
-                workSpace.getUsers().stream().map(WorkSpaceUser::getUser).collect(Collectors.toList())
+                workSpace.getUsers().stream().map(WorkspaceUser::getUser).collect(Collectors.toList())
                 // 중간 테이블에서 유저 추출
         );
     }

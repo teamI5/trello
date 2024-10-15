@@ -1,6 +1,6 @@
-package com.sparta.trellocopy.domain.workspace.entity;
+package com.sparta.trellocopy.domain.user.entity;
 
-import com.sparta.trellocopy.domain.user.entity.User;
+import com.sparta.trellocopy.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-public class WorkSpaceUser {
+public class WorkspaceUser {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +23,7 @@ public class WorkSpaceUser {
     private User user;
 
     @Builder
-    private WorkSpaceUser(WorkSpace workSpace, User user) {
+    private WorkspaceUser(WorkSpace workSpace, User user) {
         this.workSpace = workSpace;
         this.user = user;
     }

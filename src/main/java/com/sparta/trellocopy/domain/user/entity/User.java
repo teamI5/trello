@@ -1,7 +1,6 @@
 package com.sparta.trellocopy.domain.user.entity;
 
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
-import com.sparta.trellocopy.domain.workspace.entity.WorkSpaceUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,7 +26,7 @@ public class User extends Timestamped {
     private Boolean deleted;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WorkSpaceUser> workspaces;
+    private List<WorkspaceUser> workspaces;
 
     @Builder
     private User(String email, String password, UserRole role, Boolean deleted) {
