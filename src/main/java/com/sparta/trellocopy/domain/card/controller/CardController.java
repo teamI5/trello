@@ -1,8 +1,8 @@
 package com.sparta.trellocopy.domain.card.controller;
 
 import com.sparta.trellocopy.domain.card.dto.req.CardSaveRequest;
+import com.sparta.trellocopy.domain.card.dto.res.CardDetailResponse;
 import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
-import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,17 @@ public class CardController {
     }
 
     @PutMapping("/card/{cardId}")
-    public ResponseEntity<CardSimpleResponse> updatedCard(@RequestParam Long cardId, @RequestBody CardSaveRequest request){
+    public ResponseEntity<CardSimpleResponse> updatedCard(@PathVariable Long cardId, @RequestBody CardSaveRequest request){
         return ResponseEntity.ok(cardService.updatedCard(cardId, request));
     }
 
     @DeleteMapping("/card/{cardId}")
-    public ResponseEntity<CardSimpleResponse> deletedCard(@RequestParam Long cardId){
+    public ResponseEntity<CardSimpleResponse> deletedCard(@PathVariable Long cardId){
         return ResponseEntity.ok(cardService.deletedCard(cardId));
+    }
+
+    @GetMapping("/card/{cardId}")
+    public ResponseEntity<CardDetailResponse> getCard(@PathVariable Long cardId){
+        return ResponseEntity.ok(cardService.getCard(cardId));
     }
 }

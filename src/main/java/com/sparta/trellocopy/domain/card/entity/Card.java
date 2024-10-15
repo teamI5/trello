@@ -3,11 +3,13 @@ package com.sparta.trellocopy.domain.card.entity;
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import com.sparta.trellocopy.domain.list.entity.List;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Card extends Timestamped {
     @Id
