@@ -2,18 +2,22 @@ package com.sparta.trellocopy.domain.user.service;
 
 import com.sparta.trellocopy.config.JwtUtil;
 import com.sparta.trellocopy.domain.common.exception.BadRequestException;
+import com.sparta.trellocopy.domain.common.exception.NotFoundException;
+import com.sparta.trellocopy.domain.user.dto.request.GrantRequest;
 import com.sparta.trellocopy.domain.user.dto.request.LoginRequest;
 import com.sparta.trellocopy.domain.user.dto.request.UserJoinRequest;
 import com.sparta.trellocopy.domain.user.dto.response.LoginResponse;
 import com.sparta.trellocopy.domain.user.dto.response.UserJoinResponse;
+import com.sparta.trellocopy.domain.user.dto.response.WorkspaceUserResponse;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.UserRole;
-import com.sparta.trellocopy.domain.user.exception.DuplicateUserException;
-import com.sparta.trellocopy.domain.user.exception.InvalidPasswordException;
-import com.sparta.trellocopy.domain.user.exception.UserNotFoundException;
-import com.sparta.trellocopy.domain.user.exception.WithdrawnUserException;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.user.exception.*;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
+import com.sparta.trellocopy.domain.workspace.repository.WorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +31,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
-    //    private final WorkSpaceRepository workSpaceRepository;
+    private final WorkSpaceRepository workSpaceRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
     private final PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
@@ -77,17 +81,17 @@ public class AuthService {
         return LoginResponse.builder().token(token).build();
     }
 
-//    @Transactional
-//    public WorkspaceUserResponse grant(GrantRequest grantRequest) {
-//        User user = userRepository.findById(grantRequest.getUserId()).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-////        WorkSpace workSpace = workSpaceRepository.findById(grantRequest.getWorkspaceId()).orElseThrow(() -> new NotFoundException("존재하지 않는 워크스페이스입니다."));
-//        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(user.getId(), workSpace.getId()).orElseThrow(WorkspaceUserNotFoundException::new);
-//        workspaceUser.updateRole(WorkspaceRole.of(grantRequest.getRole()));
-//
-//        return WorkspaceUserResponse.builder()
-////                .workspaceId(workSpace.getId())
-//                .email(user.getEmail())
-////                .workspaceRole(workspaceUser.getRole())
-//                .build();
-//    }
+    @Transactional
+    public WorkspaceUserResponse grant(GrantRequest grantRequest) {
+        User user = userRepository.findById(grantRequest.getUserId()).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+        Workspace workSpace = workSpaceRepository.findById(grantRequest.getWorkspaceId()).orElseThrow(() -> new NotFoundException("존재하지 않는 워크스페이스입니다."));
+        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(user.getId(), workSpace.getId()).orElseThrow(WorkspaceUserNotFoundException::new);
+        workspaceUser.updateRole(WorkspaceRole.of(grantRequest.getRole()));
+
+        return WorkspaceUserResponse.builder()
+                .workspaceId(workSpace.getId())
+                .email(user.getEmail())
+                .workspaceRole(workspaceUser.getRole().name())
+                .build();
+    }
 }

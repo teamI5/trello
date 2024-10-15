@@ -10,6 +10,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE user SET deleted = 'true' WHERE user_id = ?")
@@ -36,5 +38,4 @@ public class User extends Timestamped {
         this.password = password;
         this.role = role;
     }
-
 }
