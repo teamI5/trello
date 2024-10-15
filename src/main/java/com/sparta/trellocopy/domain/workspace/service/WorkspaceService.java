@@ -68,9 +68,10 @@ public class WorkspaceService {
         Workspace workspace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(()-> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workspace.getUsers().stream().map(workSpaceUser -> workSpaceUser.getUser().getId()).toList().contains(authUser.getId())){
+        // 중간 테이블에 있는 권한으로 바꾸기
+        /*if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workspace.getUsers().stream().map(workSpaceUser -> workSpaceUser.getUser().getId()).toList().contains(authUser.getId())){
             throw new WorkspaceForbiddenException("관리자 혹은 소속 인원만 워크스페이스에 다른 유저를 초대할 수 있습니다.");
-        }
+        }*/
 
         User addedUser = userRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException("잘못된 이메일이거나 해당 유저가 존재하지 않습니다."));
