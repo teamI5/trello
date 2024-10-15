@@ -5,6 +5,8 @@ import com.sparta.trellocopy.domain.card.dto.res.CardDetailResponse;
 import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
 import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
+import com.sparta.trellocopy.domain.user.entity.User;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -14,13 +16,13 @@ public class CardService {
     private final CardRepository cardRepository;
     public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest) {
         // user.role(view만 아니면 됨)
-
         Card card = new Card(
             cardSaveRequest.getTitle(),
             cardSaveRequest.getContents(),
             cardSaveRequest.getDeadline(),
             cardSaveRequest.getFile_url()
         );
+
 
         Card createdCard = cardRepository.save(card);
 

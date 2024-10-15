@@ -1,12 +1,14 @@
 package com.sparta.trellocopy.domain.card.entity;
 
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
-import com.sparta.trellocopy.domain.list.entity.List;
+import com.sparta.trellocopy.domain.user.entity.CardUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,11 +26,14 @@ public class Card extends Timestamped {
 
     private LocalDateTime deadline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "list_id")
-    private List list;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(nullable = false, name = "list_id")
+//    private List list;
 
     private String file_url;
+
+    @OneToMany(mappedBy = "card")
+    private List<CardUser> cardUser = new ArrayList<>();
 
     public Card(String title, String contents, LocalDateTime deadline, String file_url){
         this.title = title;
