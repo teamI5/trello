@@ -8,6 +8,7 @@ import com.sparta.trellocopy.domain.card.service.CardService;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,17 +17,17 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/card")
-    public ResponseEntity<CardSimpleResponse> createdCard(@RequestBody CardSaveRequest cardSaveRequest, AuthUser authUser){
+    public ResponseEntity<CardSimpleResponse> createdCard(@RequestBody CardSaveRequest cardSaveRequest, @AuthenticationPrincipal AuthUser authUser){
         return ResponseEntity.ok(cardService.createdCard(cardSaveRequest, authUser));
     }
 
     @PutMapping("/card/{cardId}")
-    public ResponseEntity<CardSimpleResponse> updatedCard(@PathVariable Long cardId, @RequestBody CardSaveRequest request, AuthUser authUser){
+    public ResponseEntity<CardSimpleResponse> updatedCard(@PathVariable Long cardId, @RequestBody CardSaveRequest request, @AuthenticationPrincipal  AuthUser authUser){
         return ResponseEntity.ok(cardService.updatedCard(cardId, request, authUser));
     }
 
     @DeleteMapping("/card/{cardId}")
-    public ResponseEntity<CardSimpleResponse> deletedCard(@PathVariable Long cardId, @RequestBody CardSimpleRequest request, AuthUser authUser){
+    public ResponseEntity<CardSimpleResponse> deletedCard(@PathVariable Long cardId, @RequestBody CardSimpleRequest request, @AuthenticationPrincipal  AuthUser authUser){
         return ResponseEntity.ok(cardService.deletedCard(cardId, request, authUser));
     }
 
