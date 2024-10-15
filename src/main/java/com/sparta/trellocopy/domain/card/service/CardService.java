@@ -32,35 +32,40 @@ public class CardService {
     }
 
     public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request) {
+        // user.role(view만 아니면 됨)
+
         Card card = cardRepository.findByIdOrElseThrow(cardId);
-        card.update(request.getTitle(), request.getContents(), request.getDeadline(), request.getFile_url());
+
+        card.update(
+            request.getTitle(),
+            request.getContents(),
+            request.getDeadline(),
+            request.getFile_url()
+        );
+
         return new CardSimpleResponse(
             "Card updated sucessfully",
-            "", //createdCard.getUser.getEmail,
+            "", //card.getUser.getEmail,
             200
         );
     }
 
     @Transactional
     public CardSimpleResponse deletedCard(Long cardId){
-        //User user = User.fromAuthUser(authUser);
+        // user.role(view만 아니면 됨)
 
         Card card = cardRepository.findByIdOrElseThrow(cardId);
-
-        // role이 읽기전용인지
 
         cardRepository.deleteById(cardId);
 
         return new CardSimpleResponse(
             "Card deleted sucessfully",
-            "", //createdCard.getUser.getEmail,
+            "", //card.getUser.getEmail,
             200
         );
     }
 
     public CardDetailResponse getCard(Long cardId){
-        //User user = User.fromAuthUser(authUser);
-
         Card card = cardRepository.findByIdOrElseThrow(cardId);
 
         return new CardDetailResponse(
