@@ -22,4 +22,9 @@ public class CardController {
     public ResponseEntity<CardSimpleResponse> updatedCard(@RequestParam Long cardId, @RequestBody CardSaveRequest request){
         return ResponseEntity.ok(cardService.updatedCard(cardId, request));
     }
+
+    @DeleteMapping("/card/{cardId}")
+    public ResponseEntity<CardSimpleResponse> deletedCard(@RequestParam Long cardId){
+        return ResponseEntity.ok(cardService.deletedCard(cardId));
+    }
 }
