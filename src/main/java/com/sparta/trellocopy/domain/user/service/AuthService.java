@@ -34,7 +34,7 @@ public class AuthService {
     private final WorkspaceRepository workSpaceRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
     private final PasswordEncoder passwordEncoder;
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public UserJoinResponse join(UserJoinRequest userJoinRequest) {
@@ -72,7 +72,7 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UserNotFoundException("가입되지 않은 사용자입니다."));
 
-        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
