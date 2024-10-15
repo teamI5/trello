@@ -14,4 +14,6 @@ public interface ListRepository extends JpaRepository<Lists,Long> {
     List<Lists> orderNumberAsc();
 
     Optional<Lists> findByOrderNumber(Long orderNumber);
+
+    List<Lists> findAllByBoardId(Long boardId);
 }

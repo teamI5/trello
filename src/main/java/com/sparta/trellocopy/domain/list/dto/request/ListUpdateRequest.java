@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class ListUpdateRequest {
-    private Long orderNumber;
-    private Long newOrderNumber;
+    private Long listId;
+    private Integer newPosition;
 }

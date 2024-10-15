@@ -32,10 +32,10 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/grant")
-    public ResponseEntity<WorkspaceUserResponse> grantWorkspace(@RequestBody GrantRequest grantRequest) {
-        WorkspaceUserResponse workspaceUserResponse = authService.grant(grantRequest);
-        return ResponseEntity.ok(workspaceUserResponse);
-    }
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping("/grant")
+//    public ResponseEntity<WorkspaceUserResponse> grantWorkspace(@RequestBody GrantRequest grantRequest) {
+//        WorkspaceUserResponse workspaceUserResponse = authService.grant(grantRequest);
+//        return ResponseEntity.ok(workspaceUserResponse);
+//    }
 }

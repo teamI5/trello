@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ListUpdateResponse {
     private final String title;
-    private final Long orderNumber;
+    private final Long listId;
 }

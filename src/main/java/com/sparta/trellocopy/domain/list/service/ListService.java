@@ -52,25 +52,33 @@ public class ListService {
     }
 
     @Transactional
-    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request) {
+    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId) {
 
-        Lists changelist = listRepository.findByOrderNumber(request.getOrderNumber())
+        List<Lists> listsList = listRepository.findAllByBoardId(boardId);
+
+        Lists listToMove = listsList.stream()
+                .filter(list -> list.getId().equals(request.getListId()))
+                .findFirst()
                 .orElseThrow(ListNotFoundException::new);
-        Lists secondchange = listRepository.findByOrderNumber(request.getNewOrderNumber())
-                        .orElseThrow(ListNotFoundException::new);
-        Long templistorderNumber = changelist.getOrderNumber();
 
-        changelist.update(secondchange.getOrderNumber());
-        secondchange.update(templistorderNumber);
+        listsList.remove(listToMove);
 
-        List<Lists> changedList = listRepository.orderNumberAsc();
+        listsList.add(request.getNewPosition(), listToMove);
 
-        return changedList.stream().map(list -> new ListUpdateResponse(
+        for (int i = 0; i < listsList.size(); i++) {
+            Lists list = listsList.get(i);
+            Long newOrderNumber = (long) (i + 1);
+            if (!list.getOrderNumber().equals(newOrderNumber)) {
+                list.update(newOrderNumber);
+            }
+        }
+
+
+        return listsList.stream()
+                .map(list -> new ListUpdateResponse(
                         list.getTitle(),
                         list.getOrderNumber()
-                ))
-                .collect(Collectors.toList());
-
+                )).collect(Collectors.toList());
 
     }
 }
