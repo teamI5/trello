@@ -91,9 +91,38 @@ public class BoardService {
         return BoardResponse.fromBoard(board);
     }
 
-
-
     // 보드 수정(이름, 배경색, 이미지)
+    @Transactional
+    public BoardResponse updateBoard(AuthUser authUser, Long boardId, BoardRequest boardRequest) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new BoardNotFoundException("보드가 존재하지 않습니다."));
+
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(board.getWorkspace().getId(), authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
+
+        board.update(boardRequest.getTitle(),
+                boardRequest.getBackgroundColor(),
+                boardRequest.getImageUrl()
+        );
+
+        return BoardResponse.fromBoard(board);
+    }
 
     // 보드 삭제
+    @Transactional
+    public void deleteBoard(AuthUser authUser, Long boardId) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new BoardNotFoundException("보드가 존재하지 않습니다."));
+
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(board.getWorkspace().getId(), authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
+
+        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+            throw new WorkspaceRoleForbiddenException("보드 삭제 권한이 없습니다.");
+        }
+
+        boardRepository.delete(board);
+    }
 }

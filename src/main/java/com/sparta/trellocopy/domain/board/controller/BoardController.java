@@ -47,6 +47,21 @@ public class BoardController {
     }
 
     // 보드 수정(이름, 배경색, 이미지)
+    @PutMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> updateBoard(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long boardId,
+            @RequestBody BoardRequest boardRequest
+    ){
+        return ResponseEntity.ok(boardService.updateBoard(authUser, boardId, boardRequest));
+    }
 
     // 보드 삭제
+    @DeleteMapping("/{boardId}")
+    public void deleteBoard(
+            @AuthenticationPrincipal AuthUser authUser,
+            @PathVariable Long boardId
+    ){
+        boardService.deleteBoard(authUser, boardId);
+    }
 }
