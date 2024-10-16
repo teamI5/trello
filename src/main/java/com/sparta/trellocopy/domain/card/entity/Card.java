@@ -2,6 +2,7 @@ package com.sparta.trellocopy.domain.card.entity;
 
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import com.sparta.trellocopy.domain.user.entity.CardUser;
+import com.sparta.trellocopy.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,8 @@ public class Card extends Timestamped {
     private String file_url;
 
     @OneToMany(mappedBy = "card")
-    private List<CardUser> cardUser = new ArrayList<>();
+    private List<CardUser> cardUsers = new ArrayList<>();
+
 
     public Card(String title, String contents, LocalDateTime deadline, String file_url){
         this.title = title;
@@ -47,5 +49,9 @@ public class Card extends Timestamped {
         this.contents = contents;
         this.deadline = deadline;
         this.file_url = file_url;
+    }
+
+    public void addCardUser(CardUser cardUser) {
+        cardUsers.add(cardUser);
     }
 }
