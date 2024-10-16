@@ -13,6 +13,7 @@ import com.sparta.trellocopy.domain.workspace.dto.WorkspaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkspaceResponse;
 import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.workspace.exception.WorkspaceBadRequestException;
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceForbiddenException;
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +88,15 @@ public class WorkspaceService {
 
         User addedUser = userRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException("잘못된 이메일이거나 해당 유저가 존재하지 않습니다."));
+
+        // 맴버 중복 확인
+        if(workspace.getUsers().stream()
+                        .map(WorkspaceUser::getUser)
+                        .toList().contains(addedUser)
+        ){
+            throw new WorkspaceBadRequestException("이미 가입된 사용자입니다.");
+        }
+
 
         WorkspaceUser workSpaceUser = WorkspaceUser.builder()
                 .user(addedUser)
