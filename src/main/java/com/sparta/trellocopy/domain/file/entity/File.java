@@ -23,7 +23,7 @@ public class File extends Timestamped {
     private String uploadFileName;
 
     @Column(nullable = false)
-    private String storeFileName;
+    private String originalFilename;
 
     @Column(nullable = false)
     private String fileUrl;
@@ -34,10 +34,10 @@ public class File extends Timestamped {
     @Column(nullable = false)
     private long fileSize;
 
-    public File(Card card, String uploadFileName, String storeFileName, String fileUrl, String fileType, long fileSize) {
+    public File(Card card, String uploadFileName, String originalFilename, String fileUrl, String fileType, long fileSize) {
         this.card = card;
         this.uploadFileName = uploadFileName;
-        this.storeFileName = storeFileName;
+        this.originalFilename = originalFilename;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
         this.fileSize = fileSize;
