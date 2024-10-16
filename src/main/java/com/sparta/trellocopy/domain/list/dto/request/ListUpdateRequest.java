@@ -6,4 +6,5 @@ import lombok.Getter;
 public class ListUpdateRequest {
     private Long listId;
     private Integer newPosition;
+
 }

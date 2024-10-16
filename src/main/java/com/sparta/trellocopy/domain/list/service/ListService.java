@@ -37,14 +37,14 @@ public class ListService {
     @Transactional
     public ListSaveResponse saveLists(AuthUser authUser, ListSaveRequest request, Long boardId, Long workspaceId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(()-> new BoardNotFoundException("보드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BoardNotFoundException("보드를 찾을 수 없습니다."));
 
 
-        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
-                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(WorkspaceUserNotFoundException::new);
 
         // 역할이 readOnly인 경우 Exception 처리
-        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+        if (wu.getRole().equals(WorkspaceRole.READ_ONLY)) {
             throw new WorkspaceRoleForbiddenException("리스트를 생성할 권한이 없습니다.");
         }
         long orderNumbercount = listRepository.count();
@@ -67,11 +67,11 @@ public class ListService {
     @Transactional
     public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId, Long workspaceId) {
 
-        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
-                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(() -> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
 
         // 역할이 readOnly인 경우 Exception 처리
-        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
+        if (wu.getRole().equals(WorkspaceRole.READ_ONLY)) {
             throw new WorkspaceRoleForbiddenException("리스트를 수정할 권한이 없습니다.");
         }
 
@@ -107,12 +107,12 @@ public class ListService {
 
     @Transactional
     public void deleteLists(Long listId, AuthUser authUser, Long workspaceId) {
-        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId,authUser.getId())
-                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(() -> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
 
         // 역할이 readOnly인 경우 Exception 처리
-        if(wu.getRole().equals(WorkspaceRole.READ_ONLY)){
-            throw new WorkspaceRoleForbiddenException("리스트를 수정할 권한이 없습니다.");
+        if (wu.getRole().equals(WorkspaceRole.READ_ONLY)) {
+            throw new WorkspaceRoleForbiddenException("리스트를 삭제할 권한이 없습니다.");
         }
 
         listRepository.deleteById(listId);

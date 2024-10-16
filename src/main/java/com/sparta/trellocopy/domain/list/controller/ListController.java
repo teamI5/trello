@@ -51,7 +51,7 @@ public class ListController {
             @PathVariable Long boardId,
             @RequestParam Long workspaceId
     ) {
-        return ResponseEntity.ok(listService.updateOrderNumbers(authUser, request, boardId, workspaceId));
+        return ResponseEntity.ok(listService.updateOrderNumbers(authUser, request, boardId,workspaceId));
     }
 
     /**
