@@ -53,6 +53,7 @@ public class WorkspaceService {
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
                 .user(user)
                 .workspace(workspace)
+                .role(WorkspaceRole.WORKSPACE)
                 .build();
 
         workspaceRepository.save(workspace);
