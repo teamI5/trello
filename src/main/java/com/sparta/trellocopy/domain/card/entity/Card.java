@@ -2,7 +2,6 @@ package com.sparta.trellocopy.domain.card.entity;
 
 import com.sparta.trellocopy.domain.common.entity.Timestamped;
 import com.sparta.trellocopy.domain.user.entity.CardUser;
-import com.sparta.trellocopy.domain.user.entity.User;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import com.sparta.trellocopy.domain.list.entity.Lists;
-import jakarta.persistence.*;
 
 @Entity
 @Getter
