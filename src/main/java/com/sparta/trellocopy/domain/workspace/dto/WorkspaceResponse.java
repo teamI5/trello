@@ -14,16 +14,15 @@ public class WorkspaceResponse {
     private final Long id;
     private final String title;
     private final String description;
-    private final List<Board> boards;
-    private final List<User> users;
+    private final List<String> boards;
+    private final List<String> userEmail;
 
-    public WorkspaceResponse(Long id, String title, String description, List<Board> boards, List<User> users) {
+    public WorkspaceResponse(Long id, String title, String description, List<String> boards, List<String> userEmail) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.boards = boards;
-        this.users = users;
-        // 워크스페이스가 가진 유저 목록 넣기
+        this.userEmail = userEmail;
     }
 
     public static WorkspaceResponse fromWorkspace(Workspace workspace) {
@@ -31,9 +30,11 @@ public class WorkspaceResponse {
                 workspace.getId(),
                 workspace.getTitle(),
                 workspace.getDescription(),
-                workspace.getBoards(),
-                workspace.getUsers().stream().map(WorkspaceUser::getUser).collect(Collectors.toList())
-                // 워크스페이스가 가진 유저 목록 넣기
+                workspace.getBoards().stream()
+                                .map(Board::getTitle).toList(),
+                workspace.getUsers().stream()
+                        .map(workspaceUser -> workspaceUser.getUser().getEmail())
+                        .collect(Collectors.toList())
         );
     }
 }

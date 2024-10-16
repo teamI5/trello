@@ -44,10 +44,12 @@ public class WorkspaceService {
         }
 
         List<Board> boards = new ArrayList<>();
+        List<WorkspaceUser> workspaceUserList = new ArrayList<>();
         Workspace workspace = Workspace.builder()
                 .title(workspaceRequest.getTitle())
                 .description(workspaceRequest.getDescription())
                 .boards(boards)
+                .users(workspaceUserList)
                 .build();
 
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
@@ -56,8 +58,11 @@ public class WorkspaceService {
                 .role(WorkspaceRole.WORKSPACE)
                 .build();
 
-        workspaceRepository.save(workspace);
+        workspace.getUsers().add(workspaceUser);
+
         workspaceUserRepository.save(workspaceUser);
+        workspaceRepository.save(workspace);
+
 
         return WorkspaceResponse.fromWorkspace(workspace);
     }
