@@ -43,7 +43,7 @@ public class CardService {
      * @throws CardForbiddenException 사용자가 해당 워크스페이스에 카드를 생성할 권한이 없는 경우 발생
      */
     @Transactional
-    public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest, AuthUser authUser) {
+    public CardSimpleResponse createCard(CardSaveRequest cardSaveRequest, AuthUser authUser) {
         // 유저 존재 확인
         User user = userRepository.findById(authUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
@@ -83,7 +83,7 @@ public class CardService {
      * @return
      */
     @Transactional
-    public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
+    public CardSimpleResponse updateCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
         // 유저 존재 확인
         User user = userRepository.findById(authUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
@@ -110,7 +110,7 @@ public class CardService {
     }
 
     @Transactional
-    public CardSimpleResponse deletedCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
+    public CardSimpleResponse deleteCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
         // 유저 존재 확인
         User user = userRepository.findById(authUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
@@ -153,7 +153,7 @@ public class CardService {
         return workspaceUser.getRole().name();
     }
 
-    public Page<CardDetailResponse> searchCard(int page, int size, CardSearchRequest request, AuthUser authUser){
+    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Card> cards = cardRepository.searchCards(pageable, request.getTitle(), request.getContents(), request.getCardUser(), request.getDeadline());
 
