@@ -42,10 +42,10 @@ public class Workspace extends Timestamped {
     }
 
     public void update(String title, String description) {
-        if (this.title != null) {
+        if (title != null) {
             this.title = title;
         }
-        if (this.description != null) {
+        if (description != null) {
             this.description = description;
         }
     }
