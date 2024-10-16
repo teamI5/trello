@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
@@ -15,14 +16,18 @@ public interface CardRepository extends JpaRepository<Card, Long> {
         return findById(cardId).orElseThrow(CardNotFoundException::new);
     }
 
-//    @Query("""
-//            SELECT c FROM Card c
-//            WHERE (:title IS NULL OR c.title = :title)
-//            AND (:contents IS NULL OR c.contents = :contents)
-//            AND (:deadline IS NULL OR c.deadline = :deadline)
-//            AND (c. = :deadline)
-//            ORDER BY c.modifiedAt DESC
-//            """)
-//    Page<Card> searchCards(Pageable pageable, String title, String contents, CardUser CardUser, LocalDateTime deadline);
+    @Query("""
+        SELECT c FROM Card c
+        JOIN FETCH c.cardUsers cu
+        JOIN FETCH cu.user
+        JOIN c.lists l
+        WHERE (l.board.id = :boardId)
+        AND (:title IS NULL OR c.title LIKE CONCAT('%', :title, '%'))
+        AND (:contents IS NULL OR c.contents LIKE CONCAT('%', :contents, '%'))
+        AND (:startOfDay IS NULL OR c.deadline BETWEEN :startOfDay AND :endOfDay)
+        AND (:email IS NULL OR cu.user.email = :name)
+        ORDER BY c.modifiedAt DESC
+        """)
+    Page<Card> searchCards(Pageable pageable, Long boardId, String title, String contents, String email, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
 }

@@ -4,16 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardSearchRequest {
+public class AddCardUserRequest {
     private Long workSpaceId;
-    private Long boardId;
-    private String title;
-    private String contents;
-    private LocalDate deadline;
     private String email;
 }
