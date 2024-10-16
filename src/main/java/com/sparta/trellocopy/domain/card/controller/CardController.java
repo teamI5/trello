@@ -8,6 +8,7 @@ import com.sparta.trellocopy.domain.card.dto.res.CardSimpleResponse;
 import com.sparta.trellocopy.domain.card.service.CardService;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,8 +39,12 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCard(cardId));
     }
 
-    @GetMapping("/card")
-    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, @AuthenticationPrincipal AuthUser authUser){
-        return cardService.searchCards(page, size, request, authUser);
-    }
+//    @GetMapping("/card")
+//    public Page<CardDetailResponse> searchCards(
+//        @RequestParam(defaultValue = "1") int page,
+//        @RequestParam(defaultValue = "10") int size,
+//        CardSearchRequest request,
+//        @AuthenticationPrincipal AuthUser authUser){
+//        return cardService.searchCards(page, size, request, authUser);
+//    }
 }
