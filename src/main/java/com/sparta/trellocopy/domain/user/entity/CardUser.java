@@ -21,4 +21,10 @@ public class CardUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public CardUser(Card card, User user) {
+        this.card = card;
+        this.user = user;
+    }
+
 }
