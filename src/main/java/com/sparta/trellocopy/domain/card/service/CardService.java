@@ -1,5 +1,6 @@
 package com.sparta.trellocopy.domain.card.service;
 
+import com.sparta.trellocopy.domain.card.dto.req.AddCardUserRequest;
 import com.sparta.trellocopy.domain.card.dto.req.CardSaveRequest;
 import com.sparta.trellocopy.domain.card.dto.req.CardSearchRequest;
 import com.sparta.trellocopy.domain.card.dto.req.CardSimpleRequest;
@@ -16,6 +17,7 @@ import com.sparta.trellocopy.domain.user.entity.CardUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.user.exception.CardUserAlreadyExistsException;
 import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.CardUserRepository;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
@@ -248,45 +250,46 @@ public class CardService {
         );
     }
 
-//    /**
-//     * 이미 생성된 카드에 담당자를 추가하는 로직
-//     *
-//     * @param cardId
-//     * @param addCardUserRequest
-//     * @return
-//     */
-//    @Transactional
-//    public CardSimpleResponse addCardUser(Long cardId, AddCardUserRequest addCardUserRequest){
-//        // 카드 존재 확인
-//        Card card = cardRepository.findByIdOrElseThrow(cardId);
-//
-//        // 유저 존재 확인
-//        User user = userRepository.findByEmail(addCardUserRequest.getEmail())
-//            .orElseThrow(() -> new NotFoundException("User not found"));
-//
-//
-//        // 워크스페이스에 해당 유저 존재 확인
-//        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(addCardUserRequest.getWorkSpaceId(), user.getId())
-//            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 워크스페이스에 존재하지 않습니다."));
-//
-//        // 중복 기입 안되게
-//        Optional<CardUser> existingCardUser = cardUserRepository.findByCardIdAndUserId(cardId, user.getId());
-//        if(existingCardUser.isPresent()){
-//            log.info("User already exists as a card user: {}", user.getEmail());
-//            throw new CardUserAlreadyExistsException();
-//        }
-//
-//        // 담당자 추가
-//        CardUser cardUser = new CardUser(card, user);
-//        card.addCardUser(cardUser);
-//
-//        cardRepository.save(card);
-//
-//        return new CardSimpleResponse(
-//            "0",
-//            user.getEmail(),
-//            200
-//        );
-//    }
+    /**
+     * 이미 생성된 카드에 담당자를 추가하는 로직
+     *
+     * @param cardId 카드의 ID
+     * @param addCardUserRequest 추가할 담당자의 정보를 포함한 요청 객체
+     * @return CardSimpleResponse - 생성된 카드에 대한 메세지, 사용자 이메일, 상태 코드를 포함한 응답 객체
+     * @throws NotFoundException 유저가 존재하지않을때 발생
+     * @throws IllegalArgumentException 해당 워크스페이스에 유저의 정보가 존재하지 않을 때 발생
+     * @throws IllegalArgumentException 중복 기입되었을때 발생
+     */
+    @Transactional
+    public CardSimpleResponse addCardUser(Long cardId, AddCardUserRequest addCardUserRequest){
+        // 카드 존재 확인
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
+
+        // 유저 존재 확인
+        User user = userRepository.findByEmail(addCardUserRequest.getEmail())
+            .orElseThrow(() -> new NotFoundException("User not found"));
+
+
+        // 워크스페이스에 해당 유저 존재 확인
+        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(addCardUserRequest.getWorkSpaceId(), user.getId())
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 워크스페이스에 존재하지 않습니다."));
+
+        // 중복 기입 안되게
+        if(cardUserRepository.existsByCardAndUser(card, user)){
+            throw new IllegalArgumentException("이미 해당 카드에 이 사용자가 추가되어 있습니다.");
+        }
+
+        // 담당자 추가
+        CardUser cardUser = new CardUser(card, user);
+        card.addCardUser(cardUser);
+
+        cardUserRepository.save(cardUser);
+
+        return new CardSimpleResponse(
+            "0",
+            user.getEmail(),
+            200
+        );
+    }
 
 }

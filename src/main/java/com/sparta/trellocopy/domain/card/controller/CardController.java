@@ -39,10 +39,10 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCard(cardId));
     }
 
-//    @PostMapping("/card/{cardId}/add/cardUser")
-//    public ResponseEntity<CardSimpleResponse> addCardUser(@PathVariable Long cardId, @RequestBody AddCardUserRequest addCardUserRequest){
-//        return ResponseEntity.ok(cardService.addCardUser(cardId, addCardUserRequest));
-//    }
+    @PostMapping("/card/{cardId}/add/cardUser")
+    public ResponseEntity<CardSimpleResponse> addCardUser(@PathVariable Long cardId, @RequestBody AddCardUserRequest addCardUserRequest){
+        return ResponseEntity.ok(cardService.addCardUser(cardId, addCardUserRequest));
+    }
 
     @GetMapping("/card")
     public Page<CardDetailResponse> searchCards(
