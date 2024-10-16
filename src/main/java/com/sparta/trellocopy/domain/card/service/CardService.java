@@ -16,18 +16,26 @@ import com.sparta.trellocopy.domain.user.entity.CardUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
+import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.CardUserRepository;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class CardService {
     private final CardRepository cardRepository;
@@ -86,13 +94,6 @@ public class CardService {
         );
     }
 
-    /**
-     *
-     * @param cardId
-     * @param request
-     * @param authUser
-     * @return
-     */
     @Transactional
     public CardSimpleResponse updateCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
         // 유저 존재 확인
@@ -164,25 +165,85 @@ public class CardService {
         return workspaceUser.getRole().name();
     }
 
-//    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
-//        Pageable pageable = PageRequest.of(page - 1, size);
-//        Page<Card> cards = cardRepository.searchCards(pageable, request.getWorkSpaceId(), request.getTitle(), request.getContents(), request.getCardUser(), request.getDeadline());
+
+    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
+        // 유저 존재 확인
+        User user = userRepository.findByIdOrElseThrow(authUser.getId());
+
+        // 워크스페이스 권한있는지
+        Optional<WorkspaceUser> workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(request.getWorkSpaceId(), user.getId());
+        if(!workspaceUser.isPresent()){
+            throw new WorkspaceUserNotFoundException();
+        }
+
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        LocalDateTime startOfDay = null;
+        LocalDateTime endOfDay = null;
+        if(request.getDeadline() != null){
+            LocalDate searchDate = request.getDeadline();
+            startOfDay = searchDate.atStartOfDay();
+            endOfDay = searchDate.atTime(LocalTime.MAX);
+        }
+
+
+
+        Page<Card> cards = cardRepository.searchCards(pageable, request.getBoardId(), request.getTitle(),
+            request.getContents(), request.getEmail(), startOfDay, endOfDay);
+
+
+        return cards.map(card -> new CardDetailResponse(
+            card.getId(),
+            card.getTitle(),
+            card.getContents(),
+            card.getDeadline(),
+            card.getFile_url(),
+            card.getCreatedAt(),
+            card.getModifiedAt()
+            )
+        );
+    }
+
+//    /**
+//     * 이미 생성된 카드에 담당자를 추가하는 로직
+//     *
+//     * @param cardId
+//     * @param addCardUserRequest
+//     * @return
+//     */
+//    @Transactional
+//    public CardSimpleResponse addCardUser(Long cardId, AddCardUserRequest addCardUserRequest){
+//        // 카드 존재 확인
+//        Card card = cardRepository.findByIdOrElseThrow(cardId);
 //
-//        return cards.map(card -> new CardDetailResponse(
-//            card.getId(),
-//            card.getTitle(),
-//            card.getContents(),
-//            card.getDeadline(),
-//            card.getFile_url(),
-//            card.getCreatedAt(),
-//            card.getModifiedAt()
-//            )
+//        // 유저 존재 확인
+//        User user = userRepository.findByEmail(addCardUserRequest.getEmail())
+//            .orElseThrow(() -> new NotFoundException("User not found"));
+//
+//
+//        // 워크스페이스에 해당 유저 존재 확인
+//        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(addCardUserRequest.getWorkSpaceId(), user.getId())
+//            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 워크스페이스에 존재하지 않습니다."));
+//
+//        // 중복 기입 안되게
+//        Optional<CardUser> existingCardUser = cardUserRepository.findByCardIdAndUserId(cardId, user.getId());
+//        if(existingCardUser.isPresent()){
+//            log.info("User already exists as a card user: {}", user.getEmail());
+//            throw new CardUserAlreadyExistsException();
+//        }
+//
+//        // 담당자 추가
+//        CardUser cardUser = new CardUser(card, user);
+//        card.addCardUser(cardUser);
+//
+//        cardRepository.save(card);
+//
+//        return new CardSimpleResponse(
+//            "0",
+//            user.getEmail(),
+//            200
 //        );
 //    }
-
-    /**
-     * Card의 담당자를 추가하는 로직
-     */
-    //public CardSimpleResponse update
 
 }
