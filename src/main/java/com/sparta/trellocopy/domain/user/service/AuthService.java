@@ -85,7 +85,7 @@ public class AuthService {
     public WorkspaceUserResponse grant(GrantRequest grantRequest) {
         User user = userRepository.findById(grantRequest.getUserId()).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
         Workspace workSpace = workSpaceRepository.findById(grantRequest.getWorkspaceId()).orElseThrow(() -> new NotFoundException("존재하지 않는 워크스페이스입니다."));
-        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(user.getId(), workSpace.getId()).orElseThrow(WorkspaceUserNotFoundException::new);
+        WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workSpace.getId(), user.getId()).orElseThrow(WorkspaceUserNotFoundException::new);
         workspaceUser.updateRole(WorkspaceRole.of(grantRequest.getRole()));
 
         return WorkspaceUserResponse.builder()
