@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardSaveRequest {
-    public Long WorkSpaceId;
+    public Long workSpaceId;
+    public Long listId;
     private String title;
     private String contents;
     private LocalDateTime deadline;
