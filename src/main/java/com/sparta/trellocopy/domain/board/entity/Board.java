@@ -37,13 +37,13 @@ public class Board {
     }
 
     public void update(String title, String backgroundColor, String imageUrl) {
-        if(this.title != null){
+        if(title != null){
             this.title = title;
         }
-        if(this.backgroundColor != null){
+        if(backgroundColor != null){
             this.backgroundColor = backgroundColor;
         }
-        if(this.imageUrl != null){
+        if(imageUrl != null){
             this.imageUrl = imageUrl;
         }
     }
