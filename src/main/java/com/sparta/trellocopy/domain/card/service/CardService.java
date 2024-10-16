@@ -26,10 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CardService {
     private final CardRepository cardRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
     private final UserRepository userRepository;
+    private final CardUserRepository cardUserRepository;
 
     /**
      * 로그인한 사용자가 카드를 생성하는 로직
@@ -40,6 +42,7 @@ public class CardService {
      * @throws NotFoundException 사용자가 존재하지않는 경우 발생
      * @throws CardForbiddenException 사용자가 해당 워크스페이스에 카드를 생성할 권한이 없는 경우 발생
      */
+    @Transactional
     public CardSimpleResponse createdCard(CardSaveRequest cardSaveRequest, AuthUser authUser) {
         // 유저 존재 확인
         User user = userRepository.findById(authUser.getId())
@@ -62,7 +65,8 @@ public class CardService {
         CardUser cardUser = new CardUser(card, user);
         card.addCardUser(cardUser);
 
-        Card createdCard = cardRepository.save(card);
+        cardRepository.save(card);
+        cardUserRepository.save(cardUser);
 
         return new CardSimpleResponse(
             "Card created successfully",
@@ -78,7 +82,12 @@ public class CardService {
      * @param authUser
      * @return
      */
+    @Transactional
     public CardSimpleResponse updatedCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
+        // 유저 존재 확인
+        User user = userRepository.findById(authUser.getId())
+            .orElseThrow(() -> new NotFoundException("User not found"));
+
         String role = getWorkSpaceUserRole(request.WorkSpaceId, authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
             throw new CardForbiddenException();
@@ -95,13 +104,17 @@ public class CardService {
 
         return new CardSimpleResponse(
             "Card updated successfully",
-            "", //card.getUser.getEmail,
+            user.getEmail(), //card.getUser.getEmail,
             200
         );
     }
 
     @Transactional
     public CardSimpleResponse deletedCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
+        // 유저 존재 확인
+        User user = userRepository.findById(authUser.getId())
+            .orElseThrow(() -> new NotFoundException("User not found"));
+
         String role = getWorkSpaceUserRole(request.WorkSpaceId, authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
             throw new CardForbiddenException();
@@ -113,7 +126,7 @@ public class CardService {
 
         return new CardSimpleResponse(
             "Card deleted successfully",
-            "", //card.getUser.getEmail,
+            user.getEmail(), //card.getUser.getEmail,
             200
         );
     }
@@ -155,5 +168,10 @@ public class CardService {
             )
         );
     }
+
+    /**
+     * Card의 담당자를 추가하는 로직
+     */
+    //public CardSimpleResponse update
 
 }
