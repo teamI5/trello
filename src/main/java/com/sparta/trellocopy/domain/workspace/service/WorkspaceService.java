@@ -4,7 +4,10 @@ import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.UserRole;
+import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.exception.UserNotFoundException;
+import com.sparta.trellocopy.domain.user.exception.WorkspaceRoleForbiddenException;
+import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.workspace.dto.WorkspaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkspaceResponse;
@@ -50,28 +53,31 @@ public class WorkspaceService {
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
                 .user(user)
                 .workspace(workspace)
+                .role(WorkspaceRole.WORKSPACE)
                 .build();
 
         workspaceRepository.save(workspace);
         workspaceUserRepository.save(workspaceUser);
 
-        return WorkspaceResponse.fromWorkSpace(workspace);
+        return WorkspaceResponse.fromWorkspace(workspace);
     }
 
     // 관리자 혹은 워크스페이스 소속 인원이 다른 유저를 초대하기
     @Transactional
     public WorkspaceResponse addUserAtWorkSpace(
-            Long workSpaceId,
+            Long workspaceId,
             String email,
             AuthUser authUser
     ) {
-        Workspace workspace = workspaceRepository.findById(workSpaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(()-> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        // 중간 테이블에 있는 권한으로 바꾸기
-        /*if(!authUser.getUserRole().equals(UserRole.ROLE_ADMIN) && !workspace.getUsers().stream().map(workSpaceUser -> workSpaceUser.getUser().getId()).toList().contains(authUser.getId())){
-            throw new WorkspaceForbiddenException("관리자 혹은 소속 인원만 워크스페이스에 다른 유저를 초대할 수 있습니다.");
-        }*/
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
+
+        if(!wu.getRole().equals(WorkspaceRole.WORKSPACE)){
+            throw new WorkspaceRoleForbiddenException("맴버 초대 권한이 없습니다.");
+        }
 
         User addedUser = userRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException("잘못된 이메일이거나 해당 유저가 존재하지 않습니다."));
@@ -83,7 +89,7 @@ public class WorkspaceService {
 
         workspaceUserRepository.save(workSpaceUser);
 
-        return WorkspaceResponse.fromWorkSpace(workspace);
+        return WorkspaceResponse.fromWorkspace(workspace);
     }
 
     // 로그인된 유저가 가입된 모든 워크스페이스 조회
@@ -91,24 +97,31 @@ public class WorkspaceService {
 
         List<Workspace> workspaces = workspaceUserRepository.findAllWorkspacesByUserId(authUser.getId());
 
-        List<WorkspaceResponse> workspaceResponse = new ArrayList<>();
+        List<WorkspaceResponse> workspaceResponseList = new ArrayList<>();
         for(Workspace workSpace : workspaces){
-            workspaceResponse.add(WorkspaceResponse.fromWorkSpace(workSpace));
+            workspaceResponseList.add(WorkspaceResponse.fromWorkspace(workSpace));
         }
 
-        return workspaceResponse;
+        return workspaceResponseList;
     }
 
     // 제목과 설명 수정
     @Transactional
     public WorkspaceResponse updateWorkspace(AuthUser authUser, Long workspaceId, WorkspaceRequest workSpaceRequest) {
 
-        Workspace workSpace = workspaceRepository.findById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(()-> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        workSpace.update(workSpaceRequest.getTitle(), workSpaceRequest.getDescription());
+        WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
+                .orElseThrow(()-> new WorkspaceUserNotFoundException("해당 워크스페이스에 속해 있지 않습니다."));
 
-        return WorkspaceResponse.fromWorkSpace(workSpace);
+        if(!wu.getRole().equals(WorkspaceRole.WORKSPACE)){
+            throw new WorkspaceRoleForbiddenException("워크스페이스 수정 권한이 없습니다.");
+        }
+
+        workspace.update(workSpaceRequest.getTitle(), workSpaceRequest.getDescription());
+
+        return WorkspaceResponse.fromWorkspace(workspace);
     }
 
     // 삭제
