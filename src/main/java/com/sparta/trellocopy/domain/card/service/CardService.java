@@ -94,6 +94,16 @@ public class CardService {
         );
     }
 
+    /**
+     * 권한있는 사용자가 카드를 수정하는 로직
+     *
+     * @param cardId 카드의 ID
+     * @param request 카드 수정 정보를 포함한 요청 객체(제목, 내용, 마감일, 파일URL)
+     * @param authUser 인증된 사용자(카드를 생성하는 사용자)
+     * @return CardSimpleResponse - 생성된 카드에 대한 메세지, 사용자 이메일, 상태 코드를 포함한 응답 객체
+     * @throws NotFoundException 사용자가 존재하지않는 경우 발생
+     * @throws CardForbiddenException 사용자가 해당 워크스페이스에 카드를 생성할 권한이 없는 경우 발생
+     */
     @Transactional
     public CardSimpleResponse updateCard(Long cardId, CardSaveRequest request, AuthUser authUser) {
         // 유저 존재 확인
@@ -121,6 +131,16 @@ public class CardService {
         );
     }
 
+    /**
+     * 권한있는 사용자가 카드를 삭제하는 로직
+     *
+     * @param cardId 카드의 ID
+     * @param request 사용자의 권한을 확인하기 위한 정보를 포함한 요청 객체(workSpaceId)
+     * @param authUser 인증된 사용자(카드를 생성하는 사용자)
+     * @return CardSimpleResponse - 생성된 카드에 대한 메세지, 사용자 이메일, 상태 코드를 포함한 응답 객체
+     * @throws NotFoundException 사용자가 존재하지않는 경우 발생
+     * @throws CardForbiddenException 사용자가 해당 워크스페이스에 카드를 생성할 권한이 없는 경우 발생
+     */
     @Transactional
     public CardSimpleResponse deleteCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
         // 유저 존재 확인
@@ -143,6 +163,12 @@ public class CardService {
         );
     }
 
+    /**
+     * 카드를 단건 조회하는 로직
+     *
+     * @param cardId 카드의 ID
+     * @return CardDetailResponse - 특정 카드의 ID, 제목, 설명, 데드라인, 파일URL, 생성일, 수정일을 포함한 응답 객체
+     */
     public CardDetailResponse getCard(Long cardId){
         Card card = cardRepository.findByIdOrElseThrow(cardId);
 
@@ -158,6 +184,14 @@ public class CardService {
 
     }
 
+    /**
+     * 특정 워크스페이스에서 사용자의 권한을 조회하는 메서드
+     *
+     * @param workspaceId 해당 카드가 속해있는 워크스페이스 ID
+     * @param authUser 현재 인증된 사용자
+     * @return String - 사용자의 권한 이름
+     * @throws IllegalArgumentException 해당 유저가 워크스페이스에 존재하지 않는 경우 발생
+     */
     public String getWorkSpaceUserRole(Long workspaceId, AuthUser authUser){
         WorkspaceUser workspaceUser = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
             .orElseThrow(() -> new IllegalArgumentException("해당 유저가 워크스페이스에 존재하지 않습니다."));
@@ -165,7 +199,16 @@ public class CardService {
         return workspaceUser.getRole().name();
     }
 
-
+    /**
+     * 특정 조건에 맞는 카드를 Page로 조회
+     *
+     * @param page 페이지 번호(1부터 시작)
+     * @param size 페이지당 카드 수
+     * @param request - 검색 조건을 포함한 요청 객체
+     * @param authUser 현재 인증된 사용자 정보
+     * @return Page<CardDetailResponse> - 검색된 카드의 상세 정보를 포함한 페이지 객체
+     * @throws WorkspaceUserNotFoundException 사용자가 해당 워크스페이스에 존재하지 않는 경우 발생
+     */
     public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
         // 유저 존재 확인
         User user = userRepository.findByIdOrElseThrow(authUser.getId());
