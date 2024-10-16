@@ -15,7 +15,6 @@ import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.exception.WorkspaceRoleForbiddenException;
 import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
-import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,14 +30,14 @@ public class ListService {
 
     private final ListRepository listRepository;
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
 
     @Transactional
-    public ListSaveResponse saveLists(AuthUser authUser, ListSaveRequest request, Long boardId, Long workspaceId) {
+    public ListSaveResponse saveLists(AuthUser authUser, ListSaveRequest request, Long boardId) {
+
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("보드를 찾을 수 없습니다."));
-
+        Long workspaceId = board.getWorkspace().getId();
 
         WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
                 .orElseThrow(WorkspaceUserNotFoundException::new);
@@ -65,7 +64,11 @@ public class ListService {
     }
 
     @Transactional
-    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId, Long workspaceId) {
+    public List<ListUpdateResponse> updateOrderNumbers(AuthUser authUser, ListUpdateRequest request, Long boardId) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException("보드를 찾을 수 없습니다."));
+        Long workspaceId = board.getWorkspace().getId();
 
         WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
                 .orElseThrow(() -> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
@@ -106,7 +109,18 @@ public class ListService {
     }
 
     @Transactional
-    public void deleteLists(Long listId, AuthUser authUser, Long workspaceId) {
+    public void deleteLists(AuthUser authUser, Long listId) {
+
+        Lists list = listRepository.findById(listId)
+                .orElseThrow(ListNotFoundException::new);
+
+        Long boardId = list.getBoard().getId();
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException("보드를 찾을 수 없습니다."));
+
+        Long workspaceId = board.getWorkspace().getId();
+
         WorkspaceUser wu = workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())
                 .orElseThrow(() -> new WorkspaceUserNotFoundException("해당 워크스페이스에 있는 유저가 아닙니다"));
 

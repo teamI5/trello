@@ -27,14 +27,13 @@ public class ListController {
      * response : 제목
      */
 
-    @PostMapping("/boards/{boardId}")
+    @PostMapping("boards/{boardId}")
     public ResponseEntity<ListSaveResponse> saveLists(
             @AuthenticationPrincipal AuthUser authUser,
             @RequestBody ListSaveRequest request,
-            @PathVariable Long boardId,
-            @RequestParam Long workspaceId) {
+            @PathVariable Long boardId) {
 
-        return ResponseEntity.ok(listService.saveLists(authUser, request, boardId, workspaceId));
+        return ResponseEntity.ok(listService.saveLists(authUser, request,boardId));
     }
 
     /**
@@ -48,10 +47,9 @@ public class ListController {
 
             @AuthenticationPrincipal AuthUser authUser,
             @RequestBody ListUpdateRequest request,
-            @PathVariable Long boardId,
-            @RequestParam Long workspaceId
+            @PathVariable Long boardId
     ) {
-        return ResponseEntity.ok(listService.updateOrderNumbers(authUser, request, boardId,workspaceId));
+        return ResponseEntity.ok(listService.updateOrderNumbers(authUser, request, boardId));
     }
 
     /**
@@ -59,11 +57,10 @@ public class ListController {
      * pathValiable : listId
      * 읽기 전용 역할을 가진 멤버가 리스트를 삭제하려는 경우
      */
-    @DeleteMapping("/{listId}")
+    @DeleteMapping("{listId}")
     public void deleteLists(
-            @PathVariable Long listId,
             @AuthenticationPrincipal AuthUser authUser,
-            @RequestParam Long workspaceId) {
-        listService.deleteLists(listId, authUser, workspaceId);
+            @PathVariable Long listId) {
+        listService.deleteLists(authUser,listId);
     }
 }
