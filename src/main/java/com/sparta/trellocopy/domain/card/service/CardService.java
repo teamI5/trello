@@ -9,6 +9,8 @@ import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.exception.CardForbiddenException;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
 import com.sparta.trellocopy.domain.common.exception.NotFoundException;
+import com.sparta.trellocopy.domain.list.entity.Lists;
+import com.sparta.trellocopy.domain.list.repository.ListRepository;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.CardUser;
 import com.sparta.trellocopy.domain.user.entity.User;
@@ -32,6 +34,7 @@ public class CardService {
     private final WorkspaceUserRepository workspaceUserRepository;
     private final UserRepository userRepository;
     private final CardUserRepository cardUserRepository;
+    private final ListRepository listRepository;
 
     /**
      * 로그인한 사용자가 카드를 생성하는 로직
@@ -49,16 +52,24 @@ public class CardService {
             .orElseThrow(() -> new NotFoundException("User not found"));
 
         // 권한 확인
-        String role = getWorkSpaceUserRole(cardSaveRequest.WorkSpaceId, authUser);
+        String role = getWorkSpaceUserRole(cardSaveRequest.getWorkSpaceId(), authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
             throw new CardForbiddenException();
+        }
+
+        Lists list = listRepository.findById(cardSaveRequest.getListId())
+            .orElseThrow(() -> new NotFoundException("List not found"));
+
+        if (!list.getBoard().getWorkspace().getId().equals(cardSaveRequest.getWorkSpaceId())) {
+            throw new IllegalArgumentException("The list does not belong to the specified workspace.");
         }
 
         Card card = new Card(
             cardSaveRequest.getTitle(),
             cardSaveRequest.getContents(),
             cardSaveRequest.getDeadline(),
-            cardSaveRequest.getFile_url()
+            cardSaveRequest.getFile_url(),
+            list
         );
 
 
@@ -88,7 +99,7 @@ public class CardService {
         User user = userRepository.findById(authUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
 
-        String role = getWorkSpaceUserRole(request.WorkSpaceId, authUser);
+        String role = getWorkSpaceUserRole(request.getWorkSpaceId(), authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
             throw new CardForbiddenException();
         }
@@ -153,21 +164,21 @@ public class CardService {
         return workspaceUser.getRole().name();
     }
 
-    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Card> cards = cardRepository.searchCards(pageable, request.getTitle(), request.getContents(), request.getCardUser(), request.getDeadline());
-
-        return cards.map(card -> new CardDetailResponse(
-            card.getId(),
-            card.getTitle(),
-            card.getContents(),
-            card.getDeadline(),
-            card.getFile_url(),
-            card.getCreatedAt(),
-            card.getModifiedAt()
-            )
-        );
-    }
+//    public Page<CardDetailResponse> searchCards(int page, int size, CardSearchRequest request, AuthUser authUser){
+//        Pageable pageable = PageRequest.of(page - 1, size);
+//        Page<Card> cards = cardRepository.searchCards(pageable, request.getWorkSpaceId(), request.getTitle(), request.getContents(), request.getCardUser(), request.getDeadline());
+//
+//        return cards.map(card -> new CardDetailResponse(
+//            card.getId(),
+//            card.getTitle(),
+//            card.getContents(),
+//            card.getDeadline(),
+//            card.getFile_url(),
+//            card.getCreatedAt(),
+//            card.getModifiedAt()
+//            )
+//        );
+//    }
 
     /**
      * Card의 담당자를 추가하는 로직
