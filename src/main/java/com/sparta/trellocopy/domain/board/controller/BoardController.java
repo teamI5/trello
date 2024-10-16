@@ -29,7 +29,7 @@ public class BoardController {
     }
 
     // 자신이 속해있는 특정 워크스페이스의 보드 전부 조회
-    @GetMapping("/{workspaceId}")
+    @GetMapping("/all/{workspaceId}")
     public ResponseEntity<List<BoardResponse>> getBoards(
             @AuthenticationPrincipal AuthUser authUser,
             @PathVariable Long workspaceId
