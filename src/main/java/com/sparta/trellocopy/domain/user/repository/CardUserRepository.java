@@ -11,9 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CardUserRepository extends JpaRepository<CardUser, Long> {
-
-    @Query("SELECT cu FROM CardUser cu JOIN FETCH cu.user WHERE cu.card.id = :cardId")
-    List<CardUser> findByCardId(@Param("cardId") Long cardId);
+    @Query("""
+    SELECT cu FROM CardUser cu
+    WHERE (cu.card.id = :cardId)
+    AND (cu.user.email = :email)
+    """)
+    Optional<CardUser> findByCardIdAndUserEmail(Long cardId, String email);
 
     boolean existsByCardAndUser(Card card, User user);
 }

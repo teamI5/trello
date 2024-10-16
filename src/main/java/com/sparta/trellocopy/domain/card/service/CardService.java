@@ -18,6 +18,7 @@ import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
 import com.sparta.trellocopy.domain.user.exception.CardUserAlreadyExistsException;
+import com.sparta.trellocopy.domain.user.exception.CardUserNotFoundException;
 import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.CardUserRepository;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
@@ -290,6 +291,20 @@ public class CardService {
             user.getEmail(),
             200
         );
+    }
+
+    /**
+     * 카드 사용자를 삭제하는 메서드
+     *
+     * @param cardId 삭제할 카드 사용자 ID
+     * @param email 삭제할 카드 사용자 ID
+     * @throws CardUserNotFoundException 카드 사용자가 존재하지 않는 경우 발생
+     */
+    @Transactional
+    public void deleteCardUser(Long cardId, String email) {
+        CardUser cardUser = cardUserRepository.findByCardIdAndUserEmail(cardId, email)
+            .orElseThrow(() -> new CardUserNotFoundException());
+        cardUserRepository.delete(cardUser);
     }
 
 }

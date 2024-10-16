@@ -52,4 +52,9 @@ public class CardController {
         @AuthenticationPrincipal AuthUser authUser){
         return cardService.searchCards(page, size, request, authUser);
     }
+
+    @DeleteMapping("/card/{cardId}/del/cardUser")
+    public void deleteCardUser(Long cardId, String email){
+        cardService.deleteCardUser(cardId, email);
+    }
 }
