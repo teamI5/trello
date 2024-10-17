@@ -14,6 +14,7 @@ import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
 import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BoardService {
 
     private final BoardRepository boardRepository;
@@ -60,6 +60,7 @@ public class BoardService {
     }
 
     // 자신이 속해있는 특정 워크스페이스의 보드 전부 조회
+    @Transactional(readOnly = true)
     public List<BoardResponse> getBoards(AuthUser authUser, Long workspaceId) {
 
         Workspace workspace = workspaceRepository.findById(workspaceId)
@@ -80,6 +81,7 @@ public class BoardService {
     }
 
     //자신이 속해있는 워크스페이스의 보드 단건 조회
+    @Transactional(readOnly = true)
     public BoardResponse getBoard(AuthUser authUser, Long boardId) {
 
         Board board = boardRepository.findById(boardId)
@@ -107,6 +109,26 @@ public class BoardService {
         );
 
         return BoardResponse.fromBoard(board);
+    }
+
+    // 보드 수정 낙관적 락 예외 발생시 반복
+    public BoardResponse updateBoardRepeat (AuthUser authUser, Long boardId, BoardRequest boardRequest){
+        int tries = 0;
+        int maxTry = 10;
+
+        while (tries<maxTry){
+            try {
+                return updateBoard(authUser, boardId, boardRequest);
+            }catch (OptimisticLockException e){
+                tries++;
+                try{
+                    Thread.sleep(50);
+                }catch (InterruptedException ex){
+                    throw new RuntimeException();
+                }
+            }
+        }
+        throw new RuntimeException("사용자가 많아 수정이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.");
     }
 
     // 보드 삭제

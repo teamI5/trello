@@ -20,6 +20,9 @@ public class Board {
 
     private String imageUrl;
 
+    @Version
+    private int version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Workspace workspace;
 

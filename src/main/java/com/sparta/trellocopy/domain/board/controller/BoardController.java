@@ -53,7 +53,7 @@ public class BoardController {
             @PathVariable Long boardId,
             @RequestBody BoardRequest boardRequest
     ){
-        return ResponseEntity.ok(boardService.updateBoard(authUser, boardId, boardRequest));
+        return ResponseEntity.ok(boardService.updateBoardRepeat(authUser, boardId, boardRequest));
     }
 
     // 보드 삭제
