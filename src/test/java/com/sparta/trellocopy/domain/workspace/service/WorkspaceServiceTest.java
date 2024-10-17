@@ -16,11 +16,14 @@ import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 
-
+@ExtendWith(MockitoExtension.class)
 class WorkspaceServiceTest {
 
     @Mock
@@ -47,21 +50,30 @@ class WorkspaceServiceTest {
 
     @InjectMocks
     private WorkspaceService workspaceService;
+    User user = User.builder()
+            .email("e@ma.il")
+            .build();
 
-    Workspace workspace;
-    WorkspaceUser workspaceUser;
+    WorkspaceUser workspaceUser = WorkspaceUser.builder()
+            .user(user)
+            .role(WorkspaceRole.WORKSPACE)
+            .build();
+    List<WorkspaceUser> workspaceUserList = List.of(workspaceUser);
 
+    Workspace workspace = Workspace.builder()
+            .users(workspaceUserList)
+            .build();
     Long workspaceId = 1L;
     String email = "e@ma.il";
     AuthUser authUser = new AuthUser(1L, "2e@ma.il", UserRole.valueOf("ROLE_ADMIN"));
-    User user;
+
 
     @BeforeEach
     void setUp(){
-        setField(user, "email","e@ma.il");
-        setField(workspaceUser, "user", user);
-        setField(workspaceUser, "role", WorkspaceRole.WORKSPACE);
-        setField(workspace, "users", workspaceUser);
+        //setField(user, "email","e@ma.il");
+        //setField(workspaceUser, "user", user);
+        //setField(workspaceUser, "role", WorkspaceRole.WORKSPACE);
+        //setField(workspace, "users", workspaceUser);
     }
 
     @Test
