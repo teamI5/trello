@@ -33,7 +33,7 @@ public class CommentService {
     private final WorkspaceUserRepository workspaceUserRepository;
 
     @Transactional
-    public CommentSaveResponseDto createComment(long workspaceId, long cardId,
+    public CommentSaveResponseDto createComment(long cardId,
                                                 CommentSaveRequestDto commentSaveRequestDto,
                                                 AuthUser authUser) {
 
@@ -41,7 +41,7 @@ public class CommentService {
         User user = findUserById(authUser.getId());
 
         // 유저 역할 확인 필요 읽기 전용일 경우 에외처리
-        checkUserRole(workspaceId, user);
+        checkUserRole(card.getLists().getBoard().getId(), user);
 
         Comment comment = new Comment(
             commentSaveRequestDto.getContent(),
@@ -83,15 +83,16 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(long workspaceId, long cardId, long commentId,
+    public CommentResponseDto updateComment(long cardId, long commentId,
                                             CommentRequestDto commentRequestDto,
                                             AuthUser authUser) {
 
-        findCardById(cardId);
+        Card card = findCardById(cardId);
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-        checkUserRole(workspaceId, user);
+        commentCardMatch(comment,cardId);
+        checkUserRole(card.getLists().getBoard().getId(), user);
 
         comment.updateComment(commentRequestDto.getContent());
 
@@ -105,13 +106,14 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(long workspaceId, long cardId, long commentId, AuthUser authUser) {
+    public void deleteComment(long cardId, long commentId, AuthUser authUser) {
 
-        findCardById(cardId);
+        Card card = findCardById(cardId);
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
-        checkUserRole(workspaceId, user);
+        commentCardMatch(comment,cardId);
+        checkUserRole(card.getLists().getBoard().getId(), user);
 
         commentRepository.delete(comment);
 
@@ -140,6 +142,12 @@ public class CommentService {
 
         if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), userId)) {
             throw new IllegalArgumentException("해당 댓글과 사용자 일치하지 않음");
+        }
+    }
+
+    private void commentCardMatch(Comment comment, Long cardId) {
+        if (!ObjectUtils.nullSafeEquals(comment.getCard().getId(), cardId)) {
+            throw new IllegalArgumentException("해당 댓글과 카드 일치하지 않음");
         }
     }
 
