@@ -38,7 +38,7 @@ public class FileService {
     private final UserRepository userRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
 
-    @Value("${AWS_BUCKET}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
 //  파일 업로드
