@@ -54,12 +54,16 @@ public class AuthService {
         }
 
         String encodedPassword = passwordEncoder.encode(userJoinRequest.getPassword());
-        UserRole role = UserRole.of(userJoinRequest.getRole());
+        String role = userJoinRequest.getRole();
+        if (role == null || role.isBlank()) {
+            role = UserRole.ROLE_USER.name();
+        }
+        UserRole userRole = UserRole.of(role);
 
         User user = User.builder()
                 .email(email)
                 .password(encodedPassword)
-                .role(role)
+                .role(userRole)
                 .build();
 
         userRepository.save(user);
