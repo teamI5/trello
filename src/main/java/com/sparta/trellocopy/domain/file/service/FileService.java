@@ -167,6 +167,7 @@ public class FileService {
             }
         } catch (NotFoundException e) {
             log.error("파일을 찾을 수 없음", e);
+            result = "파일을 찾을 수 없음";
         }
 
         return result;
