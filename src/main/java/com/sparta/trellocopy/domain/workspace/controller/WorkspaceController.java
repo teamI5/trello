@@ -3,6 +3,7 @@ package com.sparta.trellocopy.domain.workspace.controller;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.workspace.dto.WorkspaceRequest;
 import com.sparta.trellocopy.domain.workspace.dto.WorkspaceResponse;
+import com.sparta.trellocopy.domain.workspace.service.WorkspaceConcurrencyService;
 import com.sparta.trellocopy.domain.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 public class WorkspaceController {
 
     private final WorkspaceService workSpaceService;
+    private final WorkspaceConcurrencyService workspaceConcurrencyService;
 
     @PostMapping
     public ResponseEntity<WorkspaceResponse> saveWorkSpace(
@@ -33,7 +35,7 @@ public class WorkspaceController {
             @PathVariable String email,
             @AuthenticationPrincipal AuthUser authUser
     ){
-        return ResponseEntity.ok(workSpaceService.addUserAtWorkSpace(workspaceId, email, authUser));
+        return ResponseEntity.ok(workspaceConcurrencyService.addUserAtWorkSpaceRepeat(workspaceId, email, authUser));
     }
 
     // 자신의 모든 워크스페이스 조회하기

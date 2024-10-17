@@ -1,5 +1,7 @@
 package com.sparta.trellocopy.domain.workspace.service;
 
+import com.sparta.trellocopy.domain.board.dto.BoardRequest;
+import com.sparta.trellocopy.domain.board.dto.BoardResponse;
 import com.sparta.trellocopy.domain.board.entity.Board;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.User;
@@ -17,6 +19,7 @@ import com.sparta.trellocopy.domain.workspace.exception.WorkspaceForbiddenExcept
 import com.sparta.trellocopy.domain.workspace.exception.WorkspaceNotFoundException;
 import com.sparta.trellocopy.domain.workspace.repository.WorkspaceRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +29,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
@@ -98,6 +100,7 @@ public class WorkspaceService {
     }
 
     // 로그인된 유저가 가입된 모든 워크스페이스 조회
+    @Transactional(readOnly = true)
     public List<WorkspaceResponse> getWorkspace(AuthUser authUser) {
 
         List<Workspace> workspaces = workspaceUserRepository.findAllWorkspacesByUserId(authUser.getId());

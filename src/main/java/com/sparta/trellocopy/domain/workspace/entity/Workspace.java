@@ -28,6 +28,9 @@ public class Workspace extends Timestamped {
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
     private List<WorkspaceUser> users;
 
+    @Version
+    private int version;
+
     @Builder
     public Workspace(
             String title,
