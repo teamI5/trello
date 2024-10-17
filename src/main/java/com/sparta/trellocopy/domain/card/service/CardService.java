@@ -24,6 +24,7 @@ import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundExceptio
 import com.sparta.trellocopy.domain.user.repository.CardUserRepository;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -129,6 +130,8 @@ public class CardService {
             request.getDeadline(),
             request.getFile_url()
         );
+
+        cardRepository.save(card);
 
 
         return new CardSimpleResponse(
