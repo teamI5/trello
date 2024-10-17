@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 public class AlarmAspect {
 
     // 알림 보낼 url
-    @Value("${WEBHOOKS_URL}")
+    @Value("${webhooks.url}")
     String url;
 
     // 일단 알림 요청 보내는 메서드
