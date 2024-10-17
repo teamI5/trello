@@ -12,6 +12,7 @@ public class FileDto {
     private String originalFilename;
     private String uploadFileName;
     private String fileUrl;
+    private String filePath;
     private String fileType;
     private String fileSize;
 

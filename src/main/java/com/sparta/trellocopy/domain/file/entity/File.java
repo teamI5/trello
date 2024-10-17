@@ -29,16 +29,21 @@ public class File extends Timestamped {
     private String fileUrl;
 
     @Column(nullable = false)
+    private String filePath;
+
+    @Column(nullable = false)
     private String fileType;
 
     @Column(nullable = false)
     private long fileSize;
 
-    public File(Card card, String uploadFileName, String originalFilename, String fileUrl, String fileType, long fileSize) {
+    public File(Card card, String uploadFileName, String originalFilename,
+                String fileUrl, String filePath, String fileType, long fileSize) {
         this.card = card;
         this.uploadFileName = uploadFileName;
         this.originalFilename = originalFilename;
         this.fileUrl = fileUrl;
+        this.filePath = filePath;
         this.fileType = fileType;
         this.fileSize = fileSize;
     }
