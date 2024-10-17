@@ -8,20 +8,21 @@ import com.sparta.trellocopy.domain.user.dto.response.UserJoinResponse;
 import com.sparta.trellocopy.domain.user.dto.response.UserResponse;
 import com.sparta.trellocopy.domain.user.dto.response.WorkspaceUserResponse;
 import com.sparta.trellocopy.domain.user.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RestController
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/join")
-    public ResponseEntity<UserJoinResponse> join(@RequestBody UserJoinRequest userJoinRequest) {
+    public ResponseEntity<UserJoinResponse> join(@RequestBody @Valid UserJoinRequest userJoinRequest) {
         UserJoinResponse userJoinResponse = authService.join(userJoinRequest);
         return ResponseEntity.ok(userJoinResponse);
     }
