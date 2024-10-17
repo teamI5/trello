@@ -60,7 +60,7 @@ public class CardServiceTest {
 
         // Mock 설정: 카드 생성 시 빌더 패턴을 사용해 카드 객체 생성
         Card card = new Card("title1", "content1", LocalDateTime.now(), "", null);
-// WorkspaceUser와 Board 객체 생성
+        // WorkspaceUser와 Board 객체 생성
         List<Board> boards = new ArrayList<>(); // 빈 리스트로 시작하거나 필요한 Board 객체 추가
         List<WorkspaceUser> users = new ArrayList<>();
         Workspace workspace = new Workspace("workspace","워크", boards, users);

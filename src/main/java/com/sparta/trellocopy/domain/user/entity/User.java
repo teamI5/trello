@@ -17,6 +17,12 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE user SET deleted = true WHERE user_id = ?")
 @SQLRestriction("deleted = false")
 @Entity
+@Table(
+    name = "user",
+    indexes = {
+        @Index(name = "idx_email", columnList = "email")
+    }
+)
 public class User extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -27,15 +27,16 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("""
         SELECT c FROM Card c
         JOIN FETCH c.cardUsers cu
-        JOIN FETCH cu.user
+        JOIN FETCH cu.user u
         JOIN c.lists l
         WHERE (l.board.id = :boardId)
         AND (:title IS NULL OR c.title LIKE CONCAT('%', :title, '%'))
         AND (:contents IS NULL OR c.contents LIKE CONCAT('%', :contents, '%'))
         AND (:startOfDay IS NULL OR c.deadline BETWEEN :startOfDay AND :endOfDay)
-        AND (:email IS NULL OR cu.user.email = :name)
+        AND (:email IS NULL OR cu.user.email = :email)
         ORDER BY c.modifiedAt DESC
         """)
-    Page<Card> searchCards(Pageable pageable, Long boardId, String title, String contents, String email, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    Page<Card> searchCards(Pageable pageable, Long boardId, String title, String contents,
+                           String email, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
 }

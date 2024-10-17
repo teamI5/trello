@@ -17,6 +17,14 @@ import com.sparta.trellocopy.domain.list.entity.Lists;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(
+    name = "card",
+    indexes = {
+        @Index(name = "idx_title", columnList = "title"),
+        @Index(name = "idx_contents", columnList = "contents"),
+        @Index(name = "idx_deadline", columnList = "deadline")
+    }
+)
 public class Card extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
