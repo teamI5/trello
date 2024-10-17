@@ -51,11 +51,11 @@ public class FileService {
         checkUserRole(card.getLists().getBoard().getWorkspace().getId(), user);
 
         List<FileDto> s3files = new ArrayList<>();
-        String uploadFilePath = fileType + "/" + getFolderName();
+        String uploadFilePath = fileType + "/" + getFolderName(); // 업로드 경로 설정
 
         for (MultipartFile multipartFile : multipartFiles) {
 
-            if (multipartFile == null || multipartFile.isEmpty()) {
+            if (multipartFile == null || multipartFile.isEmpty()) { // 파일 내용 비어있을 경우
                 throw new IllegalArgumentException("파일 비어있음");
             }
 
@@ -63,7 +63,7 @@ public class FileService {
 
             String originalFileName = multipartFile.getOriginalFilename();
             String uploadFileName = getUuidFileName(originalFileName);
-            String uploadFileUrl = "";
+            String uploadFileUrl = ""; // 업로드 한 파일 url 초기화
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(multipartFile.getSize());
@@ -71,7 +71,7 @@ public class FileService {
 
             try (InputStream inputStream = multipartFile.getInputStream()) {
 
-                String keyName = uploadFilePath + "/" + uploadFileName; // ex) 구분/년/월/일/파일.확장자
+                String keyName = uploadFilePath + "/" + uploadFileName; // // S3에서 사용할 파일 키 이름 구분/년/월/일/파일.확장자 설정
 
                 // S3에 폴더 및 파일 업로드
                 amazonS3.putObject(
@@ -80,7 +80,7 @@ public class FileService {
                 // S3에 업로드한 폴더 및 파일 URL
                 uploadFileUrl = amazonS3.getUrl(bucket, keyName).toString();
 
-                File file = new File(
+                File file = new File( // DB 저장 용도
                         card,
                         uploadFileName,
                         originalFileName,
@@ -128,18 +128,6 @@ public class FileService {
             ObjectMetadata metadata = amazonS3.getObjectMetadata(bucket, keyName);
             String uploadFileUrl = amazonS3.getUrl(bucket, keyName).toString();
 
-            // 파일 다운로드 기능
-//            S3Object s3Object = amazonS3.getObject(bucket, keyName);
-//            S3ObjectInputStream inputStream = s3Object.getObjectContent();
-//
-//            // 파일을 로딩해 바이트로 변환
-//            byte[] content = StreamUtils.copyToByteArray(inputStream);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.parseMediaType(file.getFileType()));
-//            headers.setContentDispositionFormData("file", file.getOriginalFilename());
-//            headers.setContentLength(content.length);
-
             // S3FileDto 객체 생성
             fileDto = FileDto.builder()
                     .originalFilename(file.getOriginalFilename())
@@ -179,7 +167,7 @@ public class FileService {
             }
         } catch (NotFoundException e) {
             log.error("파일을 찾을 수 없음", e);
-            result = "파일을 찾을 수 없음";
+            result = "파일을 찾을 수 없음"; // 예외 처리 걸릴 경우 설정해 줘야 함
         }
 
         return result;
@@ -187,16 +175,16 @@ public class FileService {
 
 //  UUID 파일명 반환 고유 파일명
     public String getUuidFileName(String fileName) {
-        String ext = fileName.substring(fileName.indexOf(".") + 1);
-        return UUID.randomUUID().toString() + "." + ext;
+        String ext = fileName.substring(fileName.indexOf(".") + 1); // . 기준 파일 확장자 추출
+        return UUID.randomUUID().toString() + "." + ext; // UUID 확장자 결합
     }
 
-//  년/월/일 폴더명 반환
+//  년/월/일 폴더명 반환    날짜 기반 폴더명
     private String getFolderName() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
         String str = sdf.format(date);
-        return str.replace("-", "/");
+        return str.replace("-", "/"); // - 를 / 로 변환
     }
 
     private File findFileById(Long fileId){
@@ -208,7 +196,7 @@ public class FileService {
 
     private final List<String> fileTypes = Arrays.asList(
             "image/jpeg", "image/png", "application/pdf", "text/csv");
-    private final long maxFileSize = 5 * 1024 * 1024; // 5MB
+    private final long maxFileSize = 5 * 1024 * 1024; // 5MB    yml 에서 5MB 제한 걸어서 의미 없음?
 
     // 첨부파일 형식 , 크기 예외처리
     private void validFile(MultipartFile multipartFile) {
