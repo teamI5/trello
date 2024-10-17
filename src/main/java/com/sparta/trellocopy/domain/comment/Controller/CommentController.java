@@ -19,14 +19,13 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{workspaceId}/cards/{cardId}/comments")
+    @PostMapping("/cards/{cardId}/comments")
     public ResponseEntity<CommentSaveResponseDto> createComment(
-            @PathVariable Long workspaceId,
             @PathVariable Long cardId,
             @RequestBody CommentSaveRequestDto commentSaveRequestDto,
             @AuthenticationPrincipal AuthUser authUser) {
         CommentSaveResponseDto commentSaveResponseDto = commentService.createComment(
-                workspaceId, cardId, commentSaveRequestDto, authUser);
+                cardId, commentSaveRequestDto, authUser);
 
     return ResponseEntity.ok(commentSaveResponseDto);
     }
@@ -39,26 +38,24 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @PutMapping("/{workspaceId}/cards/{cardId}/comments/{commentId}")
+    @PutMapping("/cards/{cardId}/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @PathVariable Long workspaceId,
             @PathVariable Long cardId,
             @PathVariable Long commentId,
             @RequestBody CommentRequestDto commentRequestDto,
             @AuthenticationPrincipal AuthUser authUser) {
         CommentResponseDto commentResponseDto = commentService.updateComment(
-                workspaceId, cardId, commentId, commentRequestDto, authUser);
+                cardId, commentId, commentRequestDto, authUser);
 
         return ResponseEntity.ok(commentResponseDto);
     }
 
-    @DeleteMapping("/{workspaceId}/cards/{cardId}/comments/{commentId}")
-    public void deleteComment(@PathVariable Long workspaceId,
-                              @PathVariable Long cardId,
+    @DeleteMapping("/cards/{cardId}/comments/{commentId}")
+    public void deleteComment(@PathVariable Long cardId,
                               @PathVariable Long commentId,
                               @AuthenticationPrincipal AuthUser authUser) {
         commentService.deleteComment(
-                workspaceId, cardId, commentId, authUser);
+                cardId, commentId, authUser);
     }
 
 }
