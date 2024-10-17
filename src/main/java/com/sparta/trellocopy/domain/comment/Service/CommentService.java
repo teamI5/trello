@@ -91,6 +91,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
+        commentCardMatch(comment,cardId);
         checkUserRole(card.getLists().getBoard().getId(), user);
 
         comment.updateComment(commentRequestDto.getContent());
@@ -111,6 +112,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         User user = findUserById(authUser.getId());
         commentUserMatch(comment,user.getId());
+        commentCardMatch(comment,cardId);
         checkUserRole(card.getLists().getBoard().getId(), user);
 
         commentRepository.delete(comment);
@@ -140,6 +142,12 @@ public class CommentService {
 
         if ((comment.getUser() == null) || !ObjectUtils.nullSafeEquals(comment.getUser().getId(), userId)) {
             throw new IllegalArgumentException("해당 댓글과 사용자 일치하지 않음");
+        }
+    }
+
+    private void commentCardMatch(Comment comment, Long cardId) {
+        if (!ObjectUtils.nullSafeEquals(comment.getCard().getId(), cardId)) {
+            throw new IllegalArgumentException("해당 댓글과 카드 일치하지 않음");
         }
     }
 
