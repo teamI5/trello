@@ -128,6 +128,18 @@ public class FileService {
             ObjectMetadata metadata = amazonS3.getObjectMetadata(bucket, keyName);
             String uploadFileUrl = amazonS3.getUrl(bucket, keyName).toString();
 
+            // 파일 다운로드 기능
+//            S3Object s3Object = amazonS3.getObject(bucket, keyName);
+//            S3ObjectInputStream inputStream = s3Object.getObjectContent();
+//
+//            // 파일을 로딩해 바이트로 변환
+//            byte[] content = StreamUtils.copyToByteArray(inputStream);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.parseMediaType(file.getFileType()));
+//            headers.setContentDispositionFormData("file", file.getOriginalFilename());
+//            headers.setContentLength(content.length);
+
             // S3FileDto 객체 생성
             fileDto = FileDto.builder()
                     .originalFilename(file.getOriginalFilename())
@@ -202,6 +214,10 @@ public class FileService {
     private void validFile(MultipartFile multipartFile) {
         String fileType = multipartFile.getContentType();
         long fileSize = multipartFile.getSize();
+
+        // 확인 용도
+        System.out.println("파일 타입: " + fileType);
+        System.out.println("파일 크기: " + fileSize + " bytes");
 
         if (!fileTypes.contains(fileType)) {
             throw new IllegalArgumentException("지원하지 않는 타입");
