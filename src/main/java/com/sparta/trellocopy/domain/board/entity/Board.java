@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(
+    name = "board",
+    indexes = {
+        @Index(name = "idx_board_id", columnList = "board_id")
+    }
+)
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

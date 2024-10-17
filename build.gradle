@@ -45,6 +45,7 @@ dependencies {
 
     // flyway
     implementation 'org.flywaydb:flyway-mysql'
+
 }
 
 tasks.named('test') {

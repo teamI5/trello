@@ -11,20 +11,21 @@ import com.sparta.trellocopy.domain.card.exception.CardForbiddenException;
 import com.sparta.trellocopy.domain.card.repository.CardRepository;
 import com.sparta.trellocopy.domain.common.exception.NotFoundException;
 import com.sparta.trellocopy.domain.list.entity.Lists;
+import com.sparta.trellocopy.domain.list.exception.ListNotFoundException;
+import com.sparta.trellocopy.domain.list.exception.ListNotInWorkSpaceException;
 import com.sparta.trellocopy.domain.list.repository.ListRepository;
 import com.sparta.trellocopy.domain.user.dto.AuthUser;
 import com.sparta.trellocopy.domain.user.entity.CardUser;
 import com.sparta.trellocopy.domain.user.entity.User;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceRole;
 import com.sparta.trellocopy.domain.user.entity.WorkspaceUser;
-import com.sparta.trellocopy.domain.user.exception.CardUserAlreadyExistsException;
 import com.sparta.trellocopy.domain.user.exception.CardUserNotFoundException;
 import com.sparta.trellocopy.domain.user.exception.WorkspaceUserNotFoundException;
 import com.sparta.trellocopy.domain.user.repository.CardUserRepository;
 import com.sparta.trellocopy.domain.user.repository.UserRepository;
 import com.sparta.trellocopy.domain.user.repository.WorkspaceUserRepository;
+import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +38,8 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
-@Transactional(readOnly = true)
+@RequiredArgsConstructor    // 의존성 주입을 위해 final로 선언된 필드의 생성자를 자동으로 만들어준다.
+@Transactional(readOnly = true)     // 읽기 전용 트랜잭션(DB의 부하를 줄여준다.)
 public class CardService {
     private final CardRepository cardRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
@@ -65,16 +65,19 @@ public class CardService {
         // 권한 확인
         String role = getWorkSpaceUserRole(cardSaveRequest.getWorkSpaceId(), authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
-            throw new CardForbiddenException();
+            throw new CardForbiddenException(); // (카드에 대한 권한이 없을때)라는 특정 상황을 처리하기위해, 일관성
         }
 
+        // 리스트 존재 확인
         Lists list = listRepository.findById(cardSaveRequest.getListId())
-            .orElseThrow(() -> new NotFoundException("List not found"));
+            .orElseThrow(() -> new ListNotFoundException());
 
+        // 사용자로부터 받은 리스트 아이디가 해당 워크스페이스와 연결된 리스트의 아이디인지
         if (!list.getBoard().getWorkspace().getId().equals(cardSaveRequest.getWorkSpaceId())) {
-            throw new IllegalArgumentException("The list does not belong to the specified workspace.");
+            throw new ListNotInWorkSpaceException();
         }
 
+        // 생성자로 객체를 생성
         Card card = new Card(
             cardSaveRequest.getTitle(),
             cardSaveRequest.getContents(),
@@ -120,12 +123,44 @@ public class CardService {
 
         Card card = cardRepository.findByIdOrElseThrow(cardId);
 
+        // 새 값으로 업데이트
         card.update(
             request.getTitle(),
             request.getContents(),
             request.getDeadline(),
             request.getFile_url()
         );
+
+        cardRepository.save(card);
+
+
+        return new CardSimpleResponse(
+            "Card updated successfully",
+            user.getEmail(), //card.getUser.getEmail,
+            200
+        );
+    }
+
+    @Transactional
+    public CardSimpleResponse updateCardWithLock(Long cardId, CardSaveRequest request, AuthUser authUser) {
+        // 유저 존재 확인
+        User user = userRepository.findById(authUser.getId())
+            .orElseThrow(() -> new NotFoundException("User not found"));
+
+        String role = getWorkSpaceUserRole(request.getWorkSpaceId(), authUser);
+        if(role.equals(WorkspaceRole.READ_ONLY)){
+            throw new CardForbiddenException();
+        }
+
+        Card card = cardRepository.findByIdOrElseThrowPessimistic(cardId);
+
+        card.update(
+            request.getTitle(),
+            request.getContents(),
+            request.getDeadline(),
+            request.getFile_url()
+        );
+        // 영속성 컨텍스트에서 이미 존재하는 객체는 변경사항을 업데이트해주기 때문에, 별도로 저장할 필요가 없다.
 
         return new CardSimpleResponse(
             "Card updated successfully",
@@ -146,16 +181,18 @@ public class CardService {
      */
     @Transactional
     public CardSimpleResponse deleteCard(Long cardId, CardSimpleRequest request, AuthUser authUser){
-        // 유저 존재 확인
+        // 유저의 이메일을 출력하기 위함
         User user = userRepository.findById(authUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
 
+        // 수정 권한 있는지 확인
         String role = getWorkSpaceUserRole(request.WorkSpaceId, authUser);
         if(role.equals(WorkspaceRole.READ_ONLY)){
             throw new CardForbiddenException();
         }
 
-        Card card = cardRepository.findByIdOrElseThrow(cardId);
+        // (OrElseThrow)캡슐화->재사용, 예외 일관성유지
+        cardRepository.findByIdOrElseThrow(cardId);
 
         cardRepository.deleteById(cardId);
 

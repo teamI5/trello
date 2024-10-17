@@ -5,6 +5,7 @@ import com.sparta.trellocopy.domain.user.entity.CardUser;
 import com.sparta.trellocopy.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,14 @@ import com.sparta.trellocopy.domain.list.entity.Lists;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(
+    name = "card",
+    indexes = {
+        @Index(name = "idx_title", columnList = "title"),
+        @Index(name = "idx_contents", columnList = "contents"),
+        @Index(name = "idx_deadline", columnList = "deadline")
+    }
+)
 public class Card extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
