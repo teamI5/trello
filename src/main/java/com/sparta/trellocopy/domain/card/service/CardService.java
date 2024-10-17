@@ -134,6 +134,33 @@ public class CardService {
         );
     }
 
+    @Transactional
+    public CardSimpleResponse updateCardWithLock(Long cardId, CardSaveRequest request, AuthUser authUser) {
+        // 유저 존재 확인
+        User user = userRepository.findById(authUser.getId())
+            .orElseThrow(() -> new NotFoundException("User not found"));
+
+        String role = getWorkSpaceUserRole(request.getWorkSpaceId(), authUser);
+        if(role.equals(WorkspaceRole.READ_ONLY)){
+            throw new CardForbiddenException();
+        }
+
+        Card card = cardRepository.findByIdOrElseThrowPessimistic(cardId);
+
+        card.update(
+            request.getTitle(),
+            request.getContents(),
+            request.getDeadline(),
+            request.getFile_url()
+        );
+
+        return new CardSimpleResponse(
+            "Card updated successfully",
+            user.getEmail(), //card.getUser.getEmail,
+            200
+        );
+    }
+
     /**
      * 권한있는 사용자가 카드를 삭제하는 로직
      *

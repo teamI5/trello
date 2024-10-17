@@ -3,16 +3,24 @@ package com.sparta.trellocopy.domain.card.repository;
 import com.sparta.trellocopy.domain.card.entity.Card;
 import com.sparta.trellocopy.domain.card.exception.CardNotFoundException;
 import com.sparta.trellocopy.domain.user.entity.CardUser;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
+
     default Card findByIdOrElseThrow(Long cardId) {
+        return findById(cardId).orElseThrow(CardNotFoundException::new);
+    }
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    default Card findByIdOrElseThrowPessimistic(Long cardId) {
         return findById(cardId).orElseThrow(CardNotFoundException::new);
     }
 
