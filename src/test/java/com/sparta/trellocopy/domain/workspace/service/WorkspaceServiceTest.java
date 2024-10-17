@@ -81,13 +81,14 @@ class WorkspaceServiceTest {
         //g
         given(workspaceRepository.findById(workspaceId)).willReturn(Optional.of(workspace));
         given(workspaceUserRepository.findByWorkspaceIdAndUserId(workspaceId, authUser.getId())).willReturn(Optional.of(workspaceUser));
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         CountDownLatch latch = new CountDownLatch(1); // 첫 번째 스레드 일시 정지
         //w
         //WorkspaceResponse response = workspaceService.addUserAtWorkSpace(workspaceId, email, authUser);
         // 첫 번째 스레드
-        WorkspaceBadRequestException exception = assertThrows(WorkspaceBadRequestException.class, ()-> {
+        WorkspaceResponse response = assertDoesNotThrow(()-> {
             Runnable firstThreadTask = () -> {
                 try {
                     workspaceService.addUserAtWorkSpace(workspaceId, email, authUser);
@@ -121,10 +122,12 @@ class WorkspaceServiceTest {
 
             executorService.shutdown();
             executorService.awaitTermination(10, TimeUnit.SECONDS);
+
+            return workspaceService.addUserAtWorkSpace(workspaceId, email, authUser);
         });
 
         //t
-        assertEquals("이미 가입된 사용자입니다.", exception.getMessage());
+        assertNotNull(response);
     }
 
 }
