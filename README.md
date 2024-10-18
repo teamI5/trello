@@ -1,6 +1,3 @@
-
-
-
 # Trello Clone Project
 ![enter image description here](https://appsumo2-cdn.appsumo.com/media/selfsubmissions/images/07b22af0-4412-4a50-8474-0446da605351.png?width=850&height=470)
 
@@ -119,6 +116,12 @@
 
 
 #### ✨ [첨부파일 구현시 S3와 연결 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
+
+#### ✨ [단건 조회시 예외처리 불명확](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EB%8B%A8%EA%B1%B4-%EC%A1%B0%ED%9A%8C%EC%8B%9C-%EC%98%88%EC%99%B8%EC%B2%98%EB%A6%AC-%EB%B6%88%EB%AA%85%ED%99%95)
+
+#### ✨ [여러 사용자가 동일한 카드를 수정할때, 동시성 문제](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%97%AC%EB%9F%AC-%EC%82%AC%EC%9A%A9%EC%9E%90%EA%B0%80-%EB%8F%99%EC%9D%BC%ED%95%9C-%EC%B9%B4%EB%93%9C%EB%A5%BC-%EC%88%98%EC%A0%95%ED%95%A0%EB%95%8C,-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C)
+
+#### ✨ [카드 검색 속도 저하](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B9%B4%EB%93%9C-%EA%B2%80%EC%83%89-%EC%86%8D%EB%8F%84-%EC%A0%80%ED%95%98)
 
 
 <br><br>
