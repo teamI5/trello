@@ -1,7 +1,10 @@
 
-# Trello Clone Project
 
-팀원간의 협업을 효율적으로 수행할 수 있도록 하는 [Trello](https://trello.com/)를 Clone한 프로젝트
+# Trello Clone Project
+![enter image description here](https://appsumo2-cdn.appsumo.com/media/selfsubmissions/images/07b22af0-4412-4a50-8474-0446da605351.png?width=850&height=470)
+
+![enter image description here](https://blog.kakaocdn.net/dn/KBEDi/btrmCBTaC4s/96iKK3eOL0WagUAS2aFQak/img.png)
+
 
 ## 👨‍👩‍👧‍👦 Hello Introduce US
 
@@ -22,11 +25,12 @@
 
 <img src="https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-3.3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
  <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/jpa-007396?style=for-the-badge&logo=jpa&logoColor=white"> 
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Flyway_mysql-CC0200?style=for-the-badge&logo=Flyway&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/> <img src="https://img.shields.io/badge/AmazonS3-569A31?style=for-the-badge&logo=AmazonS3&logoColor=white"/>  
- <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/> 
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Flyway_mysql-CC0200?style=for-the-badge&logo=Flyway&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/> 
+<img src="https://img.shields.io/badge/Amazon_EC2-FF9900?style=for-the-badge&logo=Amazon_EC2&logoColor=white"/>  <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=Amazon_S3&logoColor=white"/>  
+ <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/github_action-2088FF?style=for-the-badge&logo=github_action&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"/> 
 <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=IntelliJIDEA&logoColor=white"/>  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/>  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> 
-⭐ [Github Rules](https://github.com/likelion-project-README/README/wiki/%EC%BB%A4%EB%B0%8B-%EC%BB%A8%EB%B2%A4%EC%85%98)
-⭐ [Code Convention](https://github.com/likelion-project-README/README/wiki/%EC%BD%94%EB%93%9C-%EC%BB%A8%EB%B2%A4%EC%85%98)
+⭐ [Github Rules](https://github.com/teamI5/trello/wiki/Github-Rules)
+⭐ [Code Convention](https://github.com/teamI5/trello/wiki/Code-Convention)
 
 <br><br><br><br>
 
@@ -81,10 +85,263 @@
 > * SLACK의 WEBHOOK API 사용
 >  * JoinPoint(AOP)로 확장성 가짐
 
+## 🚨 프로젝트 구조
+```
+│  README.md
+│  .gitignore
+│  appspec.yml
+│  build.gradle
+│  Dockerfile
+│  gradlew
+│  gradlew.bat
+│  settings.gradle
+│
+│
+└─src
+    ├─main
+    │  ├─java
+    │  │  └─com
+    │  │      └─sparta
+    │  │          └─trellocopy
+    │  │              │  TrellocopyApplication.java
+    │  │              │
+    │  │              ├─config
+    │  │              │      JwtAuthenticationToken.java
+    │  │              │      JwtSecurityFilter.java
+    │  │              │      JwtUtil.java
+    │  │              │      PersistenceConfig.java
+    │  │              │      S3Config.java
+    │  │              │      SecurityConfig.java
+    │  │              │
+    │  │              └─domain
+    │  │                  ├─board
+    │  │                  │  ├─controller
+    │  │                  │  │      BoardController.java
+    │  │                  │  │
+    │  │                  │  ├─dto
+    │  │                  │  │      BoardRequest.java
+    │  │                  │  │      BoardResponse.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      Board.java
+    │  │                  │  │
+    │  │                  │  ├─exception
+    │  │                  │  │      BoardNotFoundException.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      BoardRepository.java
+    │  │                  │  │
+    │  │                  │  └─service
+    │  │                  │          BoardService.java
+    │  │                  │
+    │  │                  ├─card
+    │  │                  │  ├─controller
+    │  │                  │  │      CardController.java
+    │  │                  │  │
+    │  │                  │  ├─dto
+    │  │                  │  │  ├─req
+    │  │                  │  │  │      AddCardUserRequest.java
+    │  │                  │  │  │      CardSaveRequest.java
+    │  │                  │  │  │      CardSearchRequest.java
+    │  │                  │  │  │      CardSimpleRequest.java
+    │  │                  │  │  │
+    │  │                  │  │  └─res
+    │  │                  │  │          CardDetailResponse.java
+    │  │                  │  │          CardSimpleResponse.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      Card.java
+    │  │                  │  │
+    │  │                  │  ├─exception
+    │  │                  │  │      CardForbiddenException.java
+    │  │                  │  │      CardNotFoundException.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      CardRepository.java
+    │  │                  │  │
+    │  │                  │  └─service
+    │  │                  │          CardService.java
+    │  │                  │
+    │  │                  ├─comment
+    │  │                  │  ├─Controller
+    │  │                  │  │      CommentController.java
+    │  │                  │  │
+    │  │                  │  ├─Dto
+    │  │                  │  │      CommentRequestDto.java
+    │  │                  │  │      CommentResponseDto.java
+    │  │                  │  │      CommentSaveRequestDto.java
+    │  │                  │  │      CommentSaveResponseDto.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      Comment.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      CommentRepository.java
+    │  │                  │  │
+    │  │                  │  └─Service
+    │  │                  │          CommentService.java
+    │  │                  │
+    │  │                  ├─common
+    │  │                  │  ├─aop
+    │  │                  │  │      Alarm.java
+    │  │                  │  │      AlarmAspect.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      Timestamped.java
+    │  │                  │  │
+    │  │                  │  └─exception
+    │  │                  │          BadRequestException.java
+    │  │                  │          ForbiddenException.java
+    │  │                  │          NotFoundException.java
+    │  │                  │          UnauthorizedException.java
+    │  │                  │
+    │  │                  ├─file
+    │  │                  │  ├─controller
+    │  │                  │  │      FileController.java
+    │  │                  │  │
+    │  │                  │  ├─dto
+    │  │                  │  │      FileDto.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      File.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      FileRepository.java
+    │  │                  │  │
+    │  │                  │  └─service
+    │  │                  │          FileService.java
+    │  │                  │
+    │  │                  ├─list
+    │  │                  │  ├─controller
+    │  │                  │  │      ListController.java
+    │  │                  │  │
+    │  │                  │  ├─dto
+    │  │                  │  │  ├─request
+    │  │                  │  │  │      ListSaveRequest.java
+    │  │                  │  │  │      ListUpdateRequest.java
+    │  │                  │  │  │
+    │  │                  │  │  └─response
+    │  │                  │  │          ListSaveResponse.java
+    │  │                  │  │          ListUpdateResponse.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      Lists.java
+    │  │                  │  │
+    │  │                  │  ├─exception
+    │  │                  │  │      ListNotFoundException.java
+    │  │                  │  │      ListNotInWorkSpaceException.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      ListRepository.java
+    │  │                  │  │
+    │  │                  │  └─service
+    │  │                  │          ListService.java
+    │  │                  │
+    │  │                  ├─user
+    │  │                  │  ├─controller
+    │  │                  │  │      AuthController.java
+    │  │                  │  │      UserController.java
+    │  │                  │  │
+    │  │                  │  ├─dto
+    │  │                  │  │  │  AuthUser.java
+    │  │                  │  │  │
+    │  │                  │  │  ├─request
+    │  │                  │  │  │      GrantRequest.java
+    │  │                  │  │  │      LoginRequest.java
+    │  │                  │  │  │      UserJoinRequest.java
+    │  │                  │  │  │      WithdrawRequest.java
+    │  │                  │  │  │
+    │  │                  │  │  └─response
+    │  │                  │  │          LoginResponse.java
+    │  │                  │  │          UserJoinResponse.java
+    │  │                  │  │          UserResponse.java
+    │  │                  │  │          WorkspaceUserResponse.java
+    │  │                  │  │
+    │  │                  │  ├─entity
+    │  │                  │  │      CardUser.java
+    │  │                  │  │      User.java
+    │  │                  │  │      UserRole.java
+    │  │                  │  │      WorkspaceRole.java
+    │  │                  │  │      WorkspaceUser.java
+    │  │                  │  │
+    │  │                  │  ├─exception
+    │  │                  │  │      CardUserAlreadyExistsException.java
+    │  │                  │  │      CardUserNotFoundException.java
+    │  │                  │  │      DuplicateUserException.java
+    │  │                  │  │      InvalidPasswordException.java
+    │  │                  │  │      UserNotFoundException.java
+    │  │                  │  │      WithdrawnUserException.java
+    │  │                  │  │      WorkspaceRoleForbiddenException.java
+    │  │                  │  │      WorkspaceUserNotFoundException.java
+    │  │                  │  │
+    │  │                  │  ├─repository
+    │  │                  │  │      CardUserRepository.java
+    │  │                  │  │      UserRepository.java
+    │  │                  │  │      WorkspaceUserRepository.java
+    │  │                  │  │
+    │  │                  │  └─service
+    │  │                  │          AuthService.java
+    │  │                  │          UserService.java
+    │  │                  │
+    │  │                  └─workspace
+    │  │                      ├─controller
+    │  │                      │      WorkspaceController.java
+    │  │                      │
+    │  │                      ├─dto
+    │  │                      │      WorkspaceRequest.java
+    │  │                      │      WorkspaceResponse.java
+    │  │                      │
+    │  │                      ├─entity
+    │  │                      │      Workspace.java
+    │  │                      │
+    │  │                      ├─exception
+    │  │                      │      WorkspaceForbiddenException.java
+    │  │                      │      WorkspaceNotFoundException.java
+    │  │                      │
+    │  │                      ├─repository
+    │  │                      │      WorkspaceRepository.java
+    │  │                      │
+    │  │                      └─service
+    │  │                              WorkspaceService.java
+    │  │
+    │  └─resources
+    │      └─db
+    │          └─migration
+    │                  V1__init.sql
+    │                  V2__add_file.sql
+    │                  V3__add_timestamp_columns.sql
+    │
+    └─test
+        └─java
+            └─com
+                └─sparta
+                    └─trellocopy
+                        │  TrellocopyApplicationTests.java
+                        │
+                        ├─comment
+                        │      CommentServiceTest.java
+                        │
+                        └─domain
+                            └─card
+                                ├─controller
+                                │      CardControllerTest.java
+                                │
+                                └─service
+                                        CardServiceTest.java
+                                        CardServiceWithLockTest.java
+```
+
+
+
 
 ## 🚨 Trouble Shooting
 
-#### [JPA N+1 문제]()
+#### ✨ [리스트 순서 변경 개선사항](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%88%9C%EC%84%9C-%EB%B3%80%EA%B2%BD-%EA%B0%9C%EC%84%A0%EC%82%AC%ED%95%AD)
+
+#### ✨ [IntelliJ import 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-IntelliJ-import-%EC%98%A4%EB%A5%98)
+
+
+#### ✨ [첨부파일 구현시 S3와 연결 오류](hhttps://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
 
 
 <br><br>
@@ -92,11 +349,12 @@
 
 ## 🌐 Architecture
 
-![예시 아키텍쳐]()
+![Service Architecture](https://github.com/user-attachments/assets/7f80be7b-09c4-40b9-a4b6-e66d0da3a49c)
+
 
 
 ## 📋 ERD Diagram
 
-![ERD Diagram]()
+![erd](https://github.com/user-attachments/assets/576aec74-5364-4698-b83f-a1dd37a6aec5)
 
 <br>
