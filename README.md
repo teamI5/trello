@@ -35,6 +35,7 @@
 <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=IntelliJIDEA&logoColor=white"/>  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/>  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> 
 
 ⭐ [Github Rules](https://github.com/teamI5/trello/wiki/Github-Rules)
+
 ⭐ [Code Convention](https://github.com/teamI5/trello/wiki/Code-Convention)
 
 <br><br>
@@ -49,6 +50,8 @@
 > -   동일한 이메일로 중복 가입 방지
 > -   탈퇴한 유저의 아이디(즉, 이메일) 재사용 방지
 
+<br>
+
 ### 🍀 WorkSpace, Board
 
 > -   회원가입시 부여받은 ADMIN권한으로만 생성 가능
@@ -56,11 +59,15 @@
 > -  수정 권한이 있는 사용자(Read_Only 제외)만이 수정 가능
 > -   권한(WorkSpace, Board, Read_Only)
 
+<br>
+
 ### ⛓️ WorkSpace invite User
 
 > -   하나의 유저를 여러 사용자가 동시에 초대하는 경우 케이스 동시성 제어
 > -   낙관적 락(예상 사용 빈도와 동시성 문제 발생 가능성 낮음)
 > -  예외 발생시, 10회 시도 후 예외 메세지 반환
+
+<br>
 
 ### 📚 List
 
@@ -68,22 +75,30 @@
 > -   수정 권한이 있는 사용자(Read_Only 제외)만이 수정 가능
 > -   List 삭제 시, 연관된 Card도 모두 삭제됨
 
+<br>
+
 ### 🔍 Card Search
 
 > * JOIN FETCH를 사용하여 N+1문제 해결
 > * INDEX를 활용하여 검색 기능 최적화 완료
 > * Card의 제목, 설명, 마감일, 담당자로 검색가능
 
+<br>
+
 ### 🔥 Comment
 
 > * 수정 권한이 있는 사용자(Read_Only 제외)만이 댓글 생성 가능
 > * 카드와 댓글, 사용자 아이디가 모두 일치할 경우, 댓글 변경 가능
+
+<br>
 
 ### 📁 Attached File
 
 > * AWS S3로 첨부파일 관리
 >  * 수정 권한이 있는 사용자(Read_Only 제외)만이 첨부파일 업로드및 삭제 가능
 > * UUID로 첨부파일명 저장
+
+<br>
 
 ### 🛎️ Alerts
 
@@ -103,7 +118,7 @@
 #### ✨ [IntelliJ import 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-IntelliJ-import-%EC%98%A4%EB%A5%98)
 
 
-#### ✨ [첨부파일 구현시 S3와 연결 오류](hhttps://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
+#### ✨ [첨부파일 구현시 S3와 연결 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
 
 
 <br><br>
