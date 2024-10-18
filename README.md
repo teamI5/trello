@@ -1,10 +1,11 @@
 
 
+
 # Trello Clone Project
 ![enter image description here](https://appsumo2-cdn.appsumo.com/media/selfsubmissions/images/07b22af0-4412-4a50-8474-0446da605351.png?width=850&height=470)
 
 ![enter image description here](https://blog.kakaocdn.net/dn/KBEDi/btrmCBTaC4s/96iKK3eOL0WagUAS2aFQak/img.png)
-
+<br><br>
 
 ## 👨‍👩‍👧‍👦 Hello Introduce US
 
@@ -21,43 +22,47 @@
 
 <br>
 
-## 📝 Technologies & Tools (BE) 📝
+## 📝 Technologies & Tools 📝
 
-<img src="https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-3.3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
- <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/jpa-007396?style=for-the-badge&logo=jpa&logoColor=white"> 
+<img src="https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-3.3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/jpa-007396?style=for-the-badge&logo=jpa&logoColor=white"> 
+
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Flyway_mysql-CC0200?style=for-the-badge&logo=Flyway&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/> 
+
 <img src="https://img.shields.io/badge/Amazon_EC2-FF9900?style=for-the-badge&logo=Amazon_EC2&logoColor=white"/>  <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=Amazon_S3&logoColor=white"/>  
+
  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/github_action-2088FF?style=for-the-badge&logo=github_action&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"/> 
+ 
 <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=IntelliJIDEA&logoColor=white"/>  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/>  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/> 
+
 ⭐ [Github Rules](https://github.com/teamI5/trello/wiki/Github-Rules)
 ⭐ [Code Convention](https://github.com/teamI5/trello/wiki/Code-Convention)
 
-<br><br><br><br>
+<br><br>
 
 
 ##  프로젝트 기능
 
-### 🛡 Auth
+### 🐇 Auth
 
 > -   이메일 형식의 아이디와 비밀번호로 회원가입
 > -   비밀번호 암호화 저장
 > -   동일한 이메일로 중복 가입 방지
 > -   탈퇴한 유저의 아이디(즉, 이메일) 재사용 방지
 
-### 🛡 WorkSpace, Board
+### 🍀 WorkSpace, Board
 
 > -   회원가입시 부여받은 ADMIN권한으로만 생성 가능
 > -   수정 권한이 있는 사용자(Read_Only 제외)는 멤버 초대 가능
 > -  수정 권한이 있는 사용자(Read_Only 제외)만이 수정 가능
 > -   권한(WorkSpace, Board, Read_Only)
 
-### 🛡 WorkSpace invite User
+### ⛓️ WorkSpace invite User
 
 > -   하나의 유저를 여러 사용자가 동시에 초대하는 경우 케이스 동시성 제어
 > -   낙관적 락(예상 사용 빈도와 동시성 문제 발생 가능성 낮음)
 > -  예외 발생시, 10회 시도 후 예외 메세지 반환
 
-### 🛡 List
+### 📚 List
 
 > -   Board내에서 List 순서 변경 가능
 > -   수정 권한이 있는 사용자(Read_Only 제외)만이 수정 가능
@@ -69,21 +74,53 @@
 > * INDEX를 활용하여 검색 기능 최적화 완료
 > * Card의 제목, 설명, 마감일, 담당자로 검색가능
 
-### 🔍 Comment
+### 🔥 Comment
 
 > * 수정 권한이 있는 사용자(Read_Only 제외)만이 댓글 생성 가능
 > * 카드와 댓글, 사용자 아이디가 모두 일치할 경우, 댓글 변경 가능
 
-### 🔍 Attached File
+### 📁 Attached File
 
 > * AWS S3로 첨부파일 관리
 >  * 수정 권한이 있는 사용자(Read_Only 제외)만이 첨부파일 업로드및 삭제 가능
 > * UUID로 첨부파일명 저장
 
-### 🔍 Alerts
+### 🛎️ Alerts
 
 > * SLACK의 WEBHOOK API 사용
 >  * JoinPoint(AOP)로 확장성 가짐
+
+
+
+
+
+
+<br><br>
+## 🚨 Trouble Shooting
+
+#### ✨ [리스트 순서 변경 개선사항](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%88%9C%EC%84%9C-%EB%B3%80%EA%B2%BD-%EA%B0%9C%EC%84%A0%EC%82%AC%ED%95%AD)
+
+#### ✨ [IntelliJ import 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-IntelliJ-import-%EC%98%A4%EB%A5%98)
+
+
+#### ✨ [첨부파일 구현시 S3와 연결 오류](hhttps://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
+
+
+<br><br>
+
+
+## 🌐 Architecture
+
+![Service Architecture](https://github.com/user-attachments/assets/7f80be7b-09c4-40b9-a4b6-e66d0da3a49c)
+
+<br><br>
+
+## 📋 ERD Diagram
+
+![erd](https://github.com/user-attachments/assets/576aec74-5364-4698-b83f-a1dd37a6aec5)
+
+
+<br><br>
 
 ## 🚨 프로젝트 구조
 ```
@@ -330,31 +367,3 @@
                                         CardServiceTest.java
                                         CardServiceWithLockTest.java
 ```
-
-
-
-
-## 🚨 Trouble Shooting
-
-#### ✨ [리스트 순서 변경 개선사항](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%88%9C%EC%84%9C-%EB%B3%80%EA%B2%BD-%EA%B0%9C%EC%84%A0%EC%82%AC%ED%95%AD)
-
-#### ✨ [IntelliJ import 오류](https://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-IntelliJ-import-%EC%98%A4%EB%A5%98)
-
-
-#### ✨ [첨부파일 구현시 S3와 연결 오류](hhttps://github.com/teamI5/trello/wiki/%5BTrouble-Shooting%5D-%EC%B2%A8%EB%B6%80%ED%8C%8C%EC%9D%BC-%EA%B5%AC%ED%98%84%EC%8B%9C-S3%EC%99%80-%EC%97%B0%EA%B2%B0-%EC%98%A4%EB%A5%98)
-
-
-<br><br>
-
-
-## 🌐 Architecture
-
-![Service Architecture](https://github.com/user-attachments/assets/7f80be7b-09c4-40b9-a4b6-e66d0da3a49c)
-
-
-
-## 📋 ERD Diagram
-
-![erd](https://github.com/user-attachments/assets/576aec74-5364-4698-b83f-a1dd37a6aec5)
-
-<br>
